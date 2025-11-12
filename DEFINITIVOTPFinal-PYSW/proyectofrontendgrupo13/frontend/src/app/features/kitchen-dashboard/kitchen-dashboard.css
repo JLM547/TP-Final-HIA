@@ -1,0 +1,353 @@
+/* src/app/components/kitchen-dashboard/kitchen-dashboard.component.css */
+
+/* --- General Structure and Typography --- */
+
+:host {
+  display: block;
+  font-family: 'Arial', sans-serif;
+  background-color: #131214;
+  color: #d3c1a5;
+  min-height: 100vh;
+  margin: 0;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.kitchen-dashboard-container {
+  padding: 20px;
+  border-radius: 15px;
+  /* Bordes redondeados para el contenedor principal */
+  font-weight: bold;
+  /* Todo el texto en negrita */
+}
+
+h1,
+h2 {
+  color: #c66c43;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 1.8rem;
+}
+
+p {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* --- Dashboard Header and Logout Button --- */
+
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #573a30;
+}
+
+.dashboard-header h1 {
+  margin-bottom: 15px;
+}
+
+.logout-button {
+  background-color: #c44a3e;
+  color: #131214;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 9px;
+  transition: all 0.3s ease-in-out;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  color: #131214;
+  background: linear-gradient(to right, #c66c43, #d3c1a5);
+  transform: scale(1.05);
+}
+
+/* --- Message Sections (Loading, Error, Success) --- */
+
+.message-section div {
+  padding: 15px;
+  border-radius: 15px;
+  /* Bordes redondeados en las tarjetas de mensaje */
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.loading-message {
+  background-color: rgba(211, 193, 165, 0.1);
+  color: #d3c1a5;
+}
+
+.error-message {
+  background-color: rgba(196, 74, 62, 0.1);
+  color: #c44a3e;
+}
+
+.success-message {
+  background-color: rgba(100, 103, 94, 0.1);
+  color: #a6ada3;
+}
+
+/* --- Filter Controls --- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  background-color: #21212c;
+  padding: 25px;
+  border-radius: 15px;
+  /* Bordes redondeados para la tarjeta de filtros */
+  margin-bottom: 30px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filters label {
+  color: #a6ada3;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.filters select,
+.filters input[type="text"] {
+  background-color: #383e38;
+  border: 1px solid #d3c1a5;
+  color: #d3c1a5;
+  padding: 10px 12px;
+  border-radius: 9px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.filters button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: all 0.3s ease-in-out;
+  color: #131214;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.refresh-btn {
+  background-color: #c66c43;
+}
+
+.refresh-btn:hover {
+  background: linear-gradient(to right, #cc925d, #a6ada3);
+  transform: scale(1.05);
+}
+
+.clear-filters-btn {
+  background-color: #573a30;
+  color: #d3c1a5;
+}
+
+.clear-filters-btn:hover {
+  background: linear-gradient(to right, #a6ada3, #64675e);
+  color: #131214;
+  transform: scale(1.05);
+}
+
+.clear-search-btn {
+  background: none;
+  color: #c66c43;
+  font-weight: bold;
+  margin-left: 5px;
+  padding: 0;
+  border-radius: 0;
+  font-size: 1.2rem;
+}
+
+/* --- Orders Table --- */
+
+.orders-table-container {
+  overflow-x: auto;
+  text-align: center;
+  border-radius: 15px;
+  /* Bordes redondeados en la tarjeta de la tabla */
+}
+
+.no-data-message {
+  padding: 20px;
+  text-align: center;
+  color: #a6ada3;
+  background-color: #21212c;
+  border-radius: 15px;
+  /* Bordes redondeados en el mensaje de no hay datos */
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px auto;
+  background-color: #1b1b24;
+  border-radius: 15px;
+  /* Bordes redondeados en la tabla */
+  overflow: hidden;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+th,
+td {
+  padding: 15px 18px;
+  text-align: left;
+  border-bottom: 1px solid #383e38;
+}
+
+td {
+  font-size: 1.1rem;
+}
+
+thead th {
+  background-color: #573a30;
+  color: #d3c1a5;
+  font-weight: bold;
+}
+
+tbody tr {
+  transition: all 0.3s ease-in-out;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #241d1c;
+}
+
+tbody tr:hover {
+  background-color: #21212c;
+  transform: scale(1.01);
+}
+
+/* --- Status Badges --- */
+
+.status-pendiente {
+  color: #c66c43;
+  font-weight: bold;
+}
+
+.status-confirmado {
+  color: #a6ada3;
+  font-weight: bold;
+}
+
+.status-en-preparacion {
+  color: #d3c1a5;
+  font-weight: bold;
+}
+
+.status-en-envio {
+  color: #5b3b75;
+  font-weight: bold;
+}
+
+.status-entregado {
+  color: #383e38;
+  font-weight: bold;
+}
+
+.status-cancelado {
+  color: #c44a3e;
+  font-weight: bold;
+}
+
+/* --- Product Detail List --- */
+
+td ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+td li {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #a6ada3;
+}
+
+/* --- Action Buttons --- */
+
+td button {
+  padding: 10px 14px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  background-color: #c66c43;
+  color: #131214;
+  transition: all 0.3s ease-in-out;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+td button:hover {
+  background: linear-gradient(to right, #cc925d, #a6ada3);
+  color: #131214;
+}
+
+.cancel-button {
+  background-color: #c44a3e;
+}
+
+.cancel-button:hover {
+  background: linear-gradient(to right, #c44a40, #573a30);
+  color: #d3c1a5;
+}
+
+/* --- Responsive Design --- */
+
+@media (max-width: 1024px) {
+  .filters {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+
+  .logout-button {
+    margin-top: 15px;
+  }
+
+  .filters {
+    padding: 15px;
+  }
+
+  .orders-table-container {
+    overflow-x: auto;
+  }
+
+  td {
+    word-break: break-word;
+  }
+}

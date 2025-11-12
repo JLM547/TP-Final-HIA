@@ -1,0 +1,125 @@
+<div class="manage-ofertas-container">
+    <div class="header-section">
+        <button class="back-button" routerLink="/admin/dashboard" title="Volver al panel de administración">
+            <i class="fas fa-arrow-left"></i> Volver
+        </button>
+        <h2><i class="fas fa-list-alt"></i> Gestión de Ofertas</h2>
+        <button routerLink="/admin/ofertas/create" class="create-button">
+            <i class="fas fa-plus-circle"></i> Crear Nueva Oferta
+        </button>
+    </div>
+    <p class="description-text">Administra los descuentos porcentuales aplicables a productos o categorías.</p>
+
+    <div *ngIf="loading" class="loading-spinner">
+        <i class="fas fa-spinner fa-spin fa-3x"></i>
+        <p>Cargando ofertas...</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+        <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
+    </div>
+
+    <div *ngIf="!loading && !errorMessage">
+        <div *ngIf="ofertas.length === 0" class="no-data-message">
+            <p><i class="fas fa-info-circle"></i> No hay ofertas registradas aún. ¡Crea una nueva!</p>
+        </div>
+
+        <div *ngIf="ofertas.length > 0" class="ofertas-table-container">
+            <table class="ofertas-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descuento</th>
+                        <th>Aplicable a</th>
+                        <th>Fechas</th>
+                        <th>Estado</th>
+                        <th>Vigencia</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let oferta of ofertas">
+                        <td>
+                            <div class="oferta-name">{{ oferta.nombre }}</div>
+                            <div *ngIf="oferta.descripcion" class="oferta-description">{{ oferta.descripcion }}</div>
+                        </td>
+                        <td>
+                            <div class="tipo-oferta">
+                                <span class="tipo-icon">{{ getTipoOfertaIcon(oferta.tipoOferta) }}</span>
+                                <span class="tipo-text">{{ getTipoOfertaText(oferta.tipoOferta) }}</span>
+                            </div>
+                        </td>
+                        <td class="discount-cell">
+                            <span class="discount-badge">{{ oferta.porcentajeDescuento }}%</span>
+                        </td>
+                        <td>
+                            <div class="applicables-info">
+                                <span class="applicables-count">{{ getAplicablesText(oferta) }}</span>
+                                <div *ngIf="oferta.tipoOferta === 'producto' && oferta.productosAplicables && oferta.productosAplicables.length > 0" class="applicables-list">
+                                    <span *ngFor="let prod of oferta.productosAplicables.slice(0, 2); let last = last">
+                                        {{ prod.nombre }}<span *ngIf="!last">, </span>
+                                    </span>
+                                    <span *ngIf="oferta.productosAplicables.length > 2" class="more-items">
+                                        +{{ oferta.productosAplicables.length - 2 }} más
+                                    </span>
+                                </div>
+                                <div *ngIf="oferta.tipoOferta === 'categoria' && oferta.categoriasAplicables && oferta.categoriasAplicables.length > 0" class="applicables-list">
+                                    <span *ngFor="let cat of oferta.categoriasAplicables.slice(0, 2); let last = last">
+                                        {{ cat.nombre }}<span *ngIf="!last">, </span>
+                                    </span>
+                                    <span *ngIf="oferta.categoriasAplicables.length > 2" class="more-items">
+                                        +{{ oferta.categoriasAplicables.length - 2 }} más
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="dates-cell">
+                            <div class="date-info">
+                                <div class="date-item">
+                                    <span class="date-label">Inicio:</span>
+                                    <span class="date-value">{{ formatDateForDisplay(oferta.fechaInicio) }}</span>
+                                </div>
+                                <div class="date-item">
+                                    <span class="date-label">Fin:</span>
+                                    <span class="date-value">{{ formatDateForDisplay(oferta.fechaFin) }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span [ngClass]="{'status-active': oferta.activa, 'status-inactive': !oferta.activa}">
+                                {{ oferta.activa ? 'Activa' : 'Inactiva' }}
+                            </span>
+                        </td>
+                        <td>
+                            <span
+                                [ngClass]="{'status-active': isOfertaVigente(oferta), 'status-inactive': !isOfertaVigente(oferta)}">
+                                {{ isOfertaVigente(oferta) ? 'Vigente' : 'No Vigente' }}
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            <button (click)="viewOfertaDetails(oferta._id!)" class="action-button view-button"
+                                title="Ver Detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button (click)="editOferta(oferta._id!)" class="action-button edit-button"
+                                title="Editar Oferta">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button (click)="toggleOfertaStatus(oferta)"
+                                [ngClass]="{'action-button toggle-on': !oferta.activa, 'action-button toggle-off': oferta.activa}"
+                                [title]="oferta.activa ? 'Desactivar Oferta' : 'Activar Oferta'">
+                                <i
+                                    [ngClass]="{'fas fa-toggle-on': oferta.activa, 'fas fa-toggle-off': !oferta.activa}"></i>
+                            </button>
+                            <button (click)="deleteOferta(oferta._id!, oferta.nombre)"
+                                class="action-button delete-button" title="Eliminar Oferta">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

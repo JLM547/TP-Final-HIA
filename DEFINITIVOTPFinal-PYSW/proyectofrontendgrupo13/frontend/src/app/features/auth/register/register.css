@@ -1,0 +1,110 @@
+/* src/app/features/auth/register/register.css */
+.register-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+  font-size: 2em;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  /* Asegura que el padding no aumente el ancho total */
+  font-size: 1em;
+}
+
+.form-group input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+.specific-fields-section {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  margin-top: 25px;
+}
+
+.specific-fields-section h3 {
+  text-align: center;
+  color: #007bff;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 15px;
+  background-color: #28a745;
+  /* Un verde más agradable para el botón principal */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.btn-primary:hover {
+  background-color: #218838;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.success-message {
+  color: #28a745;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.register-container p {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95em;
+}
+
+.register-container p a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.register-container p a:hover {
+  text-decoration: underline;
+}

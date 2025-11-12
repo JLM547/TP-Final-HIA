@@ -1,0 +1,102 @@
+<div class="admin-dashboard-container">
+  <div class="dashboard-header">
+    <h2>Bienvenido, Administrador {{ currentUser?.usuario?.username }}!</h2>
+  </div>
+  <div class="main-management-section">
+    <div class="management-category-row create-section">
+      <h3><i class="fas fa-plus-circle"></i> Crear Nuevos Elementos</h3>
+      <div class="cards-grid">
+        <a routerLink="/admin/users/create" class="management-card create-user-card interactive-card">
+          <i class="fas fa-user-plus"></i>
+          <h4>Crear Nuevo Usuario</h4>
+          <p>Registra un nuevo usuario y su perfil de rol asociado.</p>
+        </a>
+        <a routerLink="/admin/products/create" class="management-card create-product-card interactive-card">
+          <i class="fas fa-box-open"></i>
+          <h4>Crear Nuevo Producto</h4>
+          <p>Registra un nuevo producto en el catálogo.</p>
+        </a>
+        <a routerLink="/admin/categories/create" class="management-card create-category-card interactive-card">
+          <i class="fas fa-tags"></i>
+          <h4>Crear Nueva Categoría</h4>
+          <p>Define nuevas categorías para organizar los productos.</p>
+        </a>
+        <a routerLink="/admin/combos/create" class="management-card create-combo-card interactive-card">
+          <i class="fas fa-cubes"></i>
+          <h4>Crear Nuevo Combo</h4>
+          <p>Une dos o más productos que te parezcan una buena combinación.</p>
+        </a>
+        <a routerLink="/admin/ofertas/create" class="management-card create-offer-card interactive-card">
+          <i class="fas fa-percent"></i>
+          <h4>Crear Nueva Oferta</h4>
+          <p>Crea promociones y descuentos aplicables a productos o categorías.</p>
+        </a>
+      </div>
+    </div>
+
+    <div class="management-category-row manage-section">
+      <h3><i class="fas fa-cogs"></i> Gestionar Elementos Existentes</h3>
+      <div class="cards-grid">
+        <a routerLink="/admin/users/manage-by-role" class="management-card manage-users-card interactive-card">
+          <i class="fas fa-users-cog"></i>
+          <h4>Gestión de Usuarios</h4>
+          <p>Visualiza, edita y elimina usuarios existentes por rol.</p>
+        </a>
+        <a routerLink="/admin/products" class="management-card manage-products-card interactive-card">
+          <i class="fas fa-boxes"></i>
+          <h4>Gestión de Productos</h4>
+          <p>Visualiza, edita y elimina productos existentes.</p>
+        </a>
+        <a routerLink="/admin/categories" class="management-card manage-categories-card interactive-card">
+          <i class="fas fa-sitemap"></i>
+          <h4>Gestionar Categorías</h4>
+          <p>Visualiza, edita y elimina categorías existentes.</p>
+        </a>
+        <a routerLink="/admin/combos" class="management-card manage-combos-card interactive-card">
+          <i class="fas fa-list-alt"></i>
+          <h4>Gestionar Combos</h4>
+          <p>Visualiza, edita y elimina combos existentes.</p>
+        </a>
+        <a routerLink="/admin/ofertas" class="management-card manage-offers-card interactive-card">
+          <i class="fas fa-tags"></i>
+          <h4>Gestionar Ofertas</h4>
+          <p>Visualiza, edita y elimina ofertas existentes.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="dashboard-panel quick-links-panel interactive-card">
+    <h3><i class="fas fa-users"></i> Administrar Personal</h3>
+    <div class="quick-links-grid">
+      <a routerLink="/kitchen/dashboard" class="quick-link-btn interactive-card">
+        <i class="fas fa-utensils"></i> Dashboard de Supervisor de Cocina
+      </a>
+      <a routerLink="/delivery/dashboard" class="quick-link-btn interactive-card">
+        <i class="fas fa-truck"></i> Dashboard de Repartidores
+      </a>
+    </div>
+  </div>
+
+  <div class="dashboard-panel quick-links-panel interactive-card">
+    <h3><i class="fas fa-link"></i> Otras Gestiones Rápidas</h3>
+    <div class="quick-links-grid">
+      <a routerLink="/admin/clientes/manage" class="quick-link-btn interactive-card">
+        <i class="fas fa-user-friends"></i> Gestión de Clientes
+      </a>
+      <a routerLink="/admin/roles/manage" class="quick-link-btn interactive-card">
+        <i class="fas fa-users-cog"></i> Gestión de Roles
+      </a>
+      <a routerLink="/admin/supervisores-cocina/manage" class="quick-link-btn interactive-card">
+        <i class="fas fa-utensils"></i> Gestión Supervisores Cocina
+      </a>
+      <a routerLink="/admin/repartidores/manage" class="quick-link-btn interactive-card">
+        <i class="fas fa-motorcycle"></i> Gestión de Repartidores
+      </a>
+    </div>
+  </div>
+
+
+</div>
