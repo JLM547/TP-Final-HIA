@@ -9,7 +9,7 @@ const isProduction = window.location.hostname !== 'localhost' && window.location
 // Ejemplo: 'https://tu-backend.herokuapp.com/api' o 'https://tu-backend.onrender.com/api'
 // ⚠️ IMPORTANTE: Reemplaza 'https://tu-backend-url.com/api' con tu URL real del backend desplegado
 // Ver INSTRUCCIONES_URL_BACKEND.md en la raíz del proyecto para más detalles
-const PRODUCTION_API_URL = 'https://nice-woje.onrender.com/api'; // ⚠️ CAMBIA ESTA URL - Ver INSTRUCCIONES_URL_BACKEND.md
+const PRODUCTION_API_URL = 'https://tp-final-hia-twr8.onrender.com'; // ⚠️ CAMBIA ESTA URL - Ver INSTRUCCIONES_URL_BACKEND.md
 const DEVELOPMENT_API_URL = 'http://localhost:3000/api';
 
 export const API_BASE_URL = isProduction ? PRODUCTION_API_URL : DEVELOPMENT_API_URL;
