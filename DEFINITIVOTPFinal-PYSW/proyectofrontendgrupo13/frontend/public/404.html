@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Grupo 13 - App</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    // Redirigir a index.html para manejar el routing de Angular
+    // Esto es necesario para GitHub Pages que no soporta routing del lado del servidor
+    sessionStorage.redirect = location.href;
+    location.replace(location.pathname.split('/').slice(0, -1).join('/') + '/index.html');
+  </script>
+</head>
+<body>
+  <noscript>
+    <p>Por favor, habilita JavaScript para usar esta aplicación.</p>
+  </noscript>
+</body>
+</html>
+

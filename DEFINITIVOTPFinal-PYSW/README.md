@@ -96,8 +96,22 @@ Cuando clones el repositorio:
 - **Frontend**: Angular 20, TypeScript, Angular Material
 - **Otras**: OpenAI API (para generación de imágenes), Google OAuth
 
+## 🌐 Despliegue en GitHub Pages
+
+El frontend está configurado para desplegarse automáticamente en GitHub Pages.
+
+**⚠️ IMPORTANTE**: Antes de desplegar, debes:
+1. Desplegar el backend en otro servicio (Render, Heroku, Railway, etc.)
+2. Actualizar la URL del backend en `proyectofrontendgrupo13/frontend/src/app/core/constants/constants.ts`
+3. Habilitar GitHub Pages en la configuración del repositorio
+
+Para más detalles, consulta:
+- **[DEPLOY.md](DEPLOY.md)** - Guía completa de despliegue
+- **[COMO_OBTENER_URL_BACKEND.md](COMO_OBTENER_URL_BACKEND.md)** - Guía paso a paso para obtener la URL del backend
+
 ## 📚 Documentación Adicional
 
 - Ver `proybackendgrupo13/README.md` para más detalles del backend
 - Ver `proyectofrontendgrupo13/frontend/README.md` para más detalles del frontend
+- Ver `DEPLOY.md` para la guía completa de despliegue en GitHub Pages
 
