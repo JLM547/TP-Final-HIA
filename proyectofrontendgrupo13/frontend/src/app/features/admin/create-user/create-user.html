@@ -1,0 +1,144 @@
+<div class="create-user-container">
+    <h2>Crear Nuevo Usuario y Perfil de Rol</h2>
+    <p>Seleccione un rol y complete los datos para crear un nuevo usuario con su perfil asociado.</p>
+
+    <div *ngIf="isLoading" class="loading-spinner">
+        Cargando roles disponibles...
+    </div>
+
+    <form *ngIf="!isLoading" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="rolName">Rol del Usuario:</label>
+            <select id="rolName" formControlName="rolName" required>
+                <option value="">-- Seleccione un rol --</option>
+                <option *ngFor="let rol of roles" [value]="rol.nombre">{{ rol.nombre | titlecase }}</option>
+            </select>
+            <div *ngIf="userForm.get('rolName')?.invalid && userForm.get('rolName')?.touched" class="validation-error">
+                El rol es obligatorio.
+            </div>
+        </div>
+
+        <div class="common-fields-section">
+            <h3>Datos Generales del Usuario</h3>
+            <div class="form-group">
+                <label for="username">Nombre de Usuario:</label>
+                <input type="text" id="username" formControlName="username" placeholder="Ej: jdoe" required>
+                <div *ngIf="f['username'].invalid && f['username'].touched" class="validation-error">
+                    <span *ngIf="f['username'].errors?.['required']">El nombre de usuario es obligatorio.</span>
+                    <span *ngIf="f['username'].errors?.['minlength']">Mínimo 3 caracteres.</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" formControlName="password" placeholder="Mínimo 6 caracteres"
+                    required>
+                <div *ngIf="f['password'].invalid && f['password'].touched" class="validation-error">
+                    <span *ngIf="f['password'].errors?.['required']">La contraseña es obligatoria.</span>
+                    <span *ngIf="f['password'].errors?.['minlength']">Mínimo 6 caracteres.</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" formControlName="email" placeholder="Ej: usuario@example.com" required>
+                <div *ngIf="f['email'].invalid && f['email'].touched" class="validation-error">
+                    <span *ngIf="f['email'].errors?.['required']">El email es obligatorio.</span>
+                    <span *ngIf="f['email'].errors?.['email']">Formato de email inválido.</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" formControlName="nombre" placeholder="Ej: Juan" required>
+                <div *ngIf="f['nombre'].invalid && f['nombre'].touched" class="validation-error">
+                    El nombre es obligatorio.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" formControlName="apellido" placeholder="Ej: Pérez" required>
+                <div *ngIf="f['apellido'].invalid && f['apellido'].touched" class="validation-error">
+                    El apellido es obligatorio.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="telefono" formControlName="telefono" placeholder="Ej: +5491123456789">
+                <div *ngIf="f['telefono'].invalid && f['telefono'].touched" class="validation-error">
+                    <span *ngIf="f['telefono'].errors?.['pattern']">El teléfono debe tener un formato válido (ej.
+                        +54911...).</span>
+                </div>
+            </div>
+        </div>
+
+        <ng-container *ngIf="selectedRoleName">
+            <div class="role-specific-fields-section">
+                <h3>Datos Específicos para {{ selectedRoleName | titlecase }}</h3>
+
+                <div *ngIf="selectedRoleName === 'cliente'">
+                    <div class="form-group">
+                        <label for="direccionCliente">Dirección:</label>
+                        <input type="text" id="direccionCliente" formControlName="direccionCliente"
+                            placeholder="Ej: Av. Principal 123">
+                        <div *ngIf="f['direccionCliente'].invalid && f['direccionCliente'].touched"
+                            class="validation-error">
+                            La dirección es obligatoria para clientes.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaNacimientoCliente">Fecha de Nacimiento:</label>
+                        <input type="date" id="fechaNacimientoCliente" formControlName="fechaNacimientoCliente">
+                    </div>
+                    <div class="form-group">
+                        <label for="preferenciasAlimentariasCliente">Preferencias Alimentarias:</label>
+                        <select id="preferenciasAlimentariasCliente" formControlName="preferenciasAlimentariasCliente"
+                            class="form-control">
+                            <option value="">-- Seleccione una opción --</option>
+                            <option value="vegetariano">Vegetariano</option>
+                            <option value="vegano">Vegano</option>
+                            <option value="sin-gluten">Sin Gluten</option>
+                            <option value="sin-lactosa">Sin Lactosa</option>
+                            <option value="ninguna">Ninguna</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div *ngIf="selectedRoleName === 'repartidor'">
+                    <div class="form-group">
+                        <label for="vehiculoRepartidor">Vehículo:</label>
+                        <input type="text" id="vehiculoRepartidor" formControlName="vehiculoRepartidor"
+                            placeholder="Ej: Moto (Honda CB 125F)">
+                        <div *ngIf="f['vehiculoRepartidor'].invalid && f['vehiculoRepartidor'].touched"
+                            class="validation-error">
+                            El vehículo es obligatorio para repartidores.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="numeroLicenciaRepartidor">Número de Licencia:</label>
+                        <input type="text" id="numeroLicenciaRepartidor" formControlName="numeroLicenciaRepartidor"
+                            placeholder="Ej: AR123456789">
+                        <div *ngIf="f['numeroLicenciaRepartidor'].invalid && f['numeroLicenciaRepartidor'].touched"
+                            class="validation-error">
+                            El número de licencia es obligatorio para repartidores.
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="selectedRoleName !== 'cliente' && selectedRoleName !== 'repartidor'" class="info-message">
+                    Este rol no requiere campos adicionales específicos.
+                </div>
+            </div>
+        </ng-container>
+
+        <button type="submit" class="btn-primary" [disabled]="userForm.invalid">
+            <i class="fas fa-user-plus"></i> Crear Usuario
+        </button>
+    </form>
+
+    <div class="back-link">
+        <a [routerLink]="getBackLink()"><i class="fas fa-arrow-left"></i> Volver </a>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<header class="header">
+  <div class="header-container">
+    <div class="logo">
+      <h1 class="logo-text">Subte</h1>
+    </div>
+
+    <nav class="nav-menu" *ngIf="showMainNav()">
+      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        Categorías
+      </a>
+      <a routerLink="/combos" routerLinkActive="active" class="nav-link">
+        Combos
+      </a>
+      <a routerLink="/ofertas" routerLinkActive="active" class="nav-link">
+        Ofertas
+      </a>
+    </nav>
+
+    <div class="auth-section">
+      <ng-container *ngIf="isAuthenticated; else loginButton">
+        <div class="user-menu">
+          <button *ngIf="showCartButton()" class="cart-btn" (click)="onCartClick()">
+            <span class="cart-icon">🛒</span>
+            <span class="cart-text">Carrito</span>
+            <span *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</span>
+            <span *ngIf="cartTotal > 0" class="cart-total">${{ cartTotal | number:'1.2-2' }}</span>
+          </button>
+
+          <button *ngIf="isCliente()" class="go-profile-btn" (click)="goToClientProfile()">
+            <span class="go-profile-icon">👤</span>
+            <span class="go-profile-text">Ir a tu perfil</span>
+          </button>
+
+          <button class="profile-btn" (click)="onProfileClick()">
+            <span class="user-name">{{ userName || 'Mi Perfil' }}</span>
+            <span class="user-role" *ngIf="userRole">({{ userRole }})</span>
+          </button>
+          
+          <button class="logout-btn" (click)="logout()">
+            Cerrar Sesión
+          </button>
+        </div>
+      </ng-container>
+      
+      <ng-template #loginButton>
+        <button class="login-btn" (click)="onLoginClick()">
+          Iniciar Sesión
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</header>

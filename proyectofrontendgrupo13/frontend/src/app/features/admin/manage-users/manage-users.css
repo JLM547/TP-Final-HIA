@@ -1,0 +1,240 @@
+/* --- Estilos Generales del Contenedor --- */
+.manage-by-role-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 30px;
+    max-width: 1200px;
+    margin: 40px auto;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.manage-by-role-container h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 2.5em;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.manage-by-role-container p {
+    color: #666;
+    font-size: 1.1em;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+/* --- Estilos de las Tarjetas de Selección de Rol --- */
+.role-selection-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 50px;
+    justify-content: center;
+}
+
+.role-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 200px;
+    /* Altura mínima para todas las tarjetas */
+}
+
+.role-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.role-card i {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    color: #007bff;
+    /* Color predeterminado de los iconos */
+    transition: color 0.3s ease;
+}
+
+.role-card h4 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.role-card p {
+    font-size: 0.95em;
+    color: #777;
+    line-height: 1.5;
+    margin-bottom: 0;
+    /* Elimina el margen inferior predeterminado */
+}
+
+/* --- Colores específicos para cada tipo de tarjeta (personalización visual) --- */
+.roles-card i {
+    color: #28a745;
+    /* Verde */
+}
+
+.repartidores-card i {
+    color: #ffc107;
+    /* Amarillo */
+}
+
+.clientes-card i {
+    color: #17a2b8;
+    /* Azul claro */
+}
+
+.cocina-card i {
+    color: #dc3545;
+    /* Rojo */
+}
+
+.ventas-card i {
+    color: #6f42c1;
+    /* Púrpura */
+}
+
+/* --- Estilos del Enlace de Volver --- */
+.back-link {
+    margin-top: 40px;
+}
+
+.back-link a {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 25px;
+    background-color: #6c757d;
+    /* Gris oscuro */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1.05em;
+}
+
+.back-link a:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+}
+
+.back-link i {
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+/* --- Media Queries para Responsividad --- */
+@media (max-width: 992px) {
+    .manage-by-role-container {
+        padding: 25px;
+        margin: 30px auto;
+    }
+
+    .manage-by-role-container h2 {
+        font-size: 2em;
+    }
+
+    .manage-by-role-container p {
+        font-size: 1em;
+        margin-bottom: 30px;
+    }
+
+    .role-card {
+        padding: 25px;
+        min-height: 180px;
+    }
+
+    .role-card i {
+        font-size: 3em;
+        margin-bottom: 15px;
+    }
+
+    .role-card h4 {
+        font-size: 1.3em;
+    }
+}
+
+@media (max-width: 768px) {
+    .role-selection-cards {
+        grid-template-columns: 1fr;
+        /* Una columna en pantallas pequeñas */
+    }
+
+    .manage-by-role-container {
+        padding: 20px;
+        margin: 20px auto;
+    }
+
+    .manage-by-role-container h2 {
+        font-size: 1.8em;
+    }
+
+    .manage-by-role-container p {
+        font-size: 0.95em;
+        margin-bottom: 25px;
+    }
+
+    .role-card {
+        padding: 20px;
+        min-height: 160px;
+    }
+
+    .role-card i {
+        font-size: 2.8em;
+        margin-bottom: 12px;
+    }
+
+    .role-card h4 {
+        font-size: 1.2em;
+    }
+
+    .back-link a {
+        padding: 10px 20px;
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .manage-by-role-container {
+        padding: 15px;
+    }
+
+    .manage-by-role-container h2 {
+        font-size: 1.6em;
+    }
+
+    .manage-by-role-container p {
+        font-size: 0.9em;
+        margin-bottom: 20px;
+    }
+
+    .role-card i {
+        font-size: 2.5em;
+    }
+
+    .role-card h4 {
+        font-size: 1.1em;
+    }
+}

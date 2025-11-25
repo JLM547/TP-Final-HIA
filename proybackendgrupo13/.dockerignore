@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log
+.env
+config.js
+.git
+.gitignore
+README.md
+*.md
+.DS_Store
+*.log
+scripts/*.zip
+scripts/*.tar.gz
+scripts/backup/
+scripts/mongodb-backup/
+
