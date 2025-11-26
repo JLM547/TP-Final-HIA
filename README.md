@@ -67,11 +67,13 @@ docker-compose ps
 ```
 
 5. **Acceder a los servicios:**
-   - **Frontend**: http://localhost
+   - **Frontend**: http://localhost:8080
    - **Backend API**: http://localhost:3000/api
    - **Mongo Express**: http://localhost:8081 (usuario: `admin`, contraseña: `admin123`)
    - **Prometheus**: http://localhost:9090
    - **Grafana**: http://localhost:3001 (usuario: `admin`, contraseña: `admin` por defecto)
+
+   **⚠️ Nota:** Si tienes AppServ u otro servidor web usando el puerto 80, el frontend se ejecuta en el puerto 8080 para evitar conflictos.
 
 **Comandos útiles:**
 ```bash
@@ -248,7 +250,8 @@ El proyecto incluye los siguientes contenedores:
 ## ⚠️ Notas Importantes
 
 - **Variables de entorno**: Usa `.env` para configuraciones sensibles (no subir a GitHub)
-- **Puertos**: Asegúrate de que los puertos 80, 3000, 3001, 8081, 9090, 27017 estén disponibles
+- **Puertos**: Asegúrate de que los puertos 8080, 3000, 3001, 8081, 9090, 27017 estén disponibles
+  - Si tienes AppServ u otro servidor en el puerto 80, el frontend usará el puerto 8080 automáticamente
 - **Datos persistentes**: Los datos de MongoDB y Grafana se guardan en volúmenes Docker
 - **Primera ejecución**: La primera vez puede tardar más debido a la construcción de imágenes
 - **OPENAI_API_KEY**: Es **opcional**. Si no la configuras, la generación de imágenes estará deshabilitada pero la aplicación funcionará normalmente
