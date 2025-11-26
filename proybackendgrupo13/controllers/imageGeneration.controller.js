@@ -1,13 +1,31 @@
 // proyecto/backend/controllers/imageGeneration.controller.js
 const { OpenAI } = require('openai');
 
-// Inicializa el cliente de OpenAI con tu API Key desde las variables de entorno
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+// Función para obtener el cliente de OpenAI (lazy initialization)
+let openaiClient = null;
+function getOpenAIClient() {
+    if (!openaiClient) {
+        const apiKey = process.env.OPENAI_API_KEY;
+        if (!apiKey) {
+            throw new Error('OPENAI_API_KEY no está configurada. Esta funcionalidad está deshabilitada.');
+        }
+        openaiClient = new OpenAI({
+            apiKey: apiKey,
+        });
+    }
+    return openaiClient;
+}
 
 exports.generateImage = async (req, res) => {
     try {
+        // Verificar si OpenAI está configurado
+        if (!process.env.OPENAI_API_KEY) {
+            return res.status(503).json({ 
+                mensaje: 'Servicio de generación de imágenes no disponible. OPENAI_API_KEY no está configurada.',
+                disponible: false
+            });
+        }
+
         const { prompt } = req.body;
 
         // ***** AQUÍ ES DONDE DEBES AGREGAR ESTAS LÍNEAS *****
@@ -18,6 +36,9 @@ exports.generateImage = async (req, res) => {
         if (!prompt) {
             return res.status(400).json({ mensaje: 'El prompt es requerido para generar la imagen.' });
         }
+
+        // Obtener el cliente de OpenAI (lazy initialization)
+        const openai = getOpenAIClient();
 
         // Llamada a la API de DALL-E
         const response = await openai.images.generate({

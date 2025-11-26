@@ -248,7 +248,9 @@ El proyecto incluye los siguientes contenedores:
 ## ⚠️ Notas Importantes
 
 - **Variables de entorno**: Usa `.env` para configuraciones sensibles (no subir a GitHub)
-- **Puertos**: Asegúrate de que los puertos 80, 3000, 3001, 9090, 27017 estén disponibles
+- **Puertos**: Asegúrate de que los puertos 80, 3000, 3001, 8081, 9090, 27017 estén disponibles
 - **Datos persistentes**: Los datos de MongoDB y Grafana se guardan en volúmenes Docker
 - **Primera ejecución**: La primera vez puede tardar más debido a la construcción de imágenes
+- **OPENAI_API_KEY**: Es **opcional**. Si no la configuras, la generación de imágenes estará deshabilitada pero la aplicación funcionará normalmente
+- **Google OAuth**: El Client ID está configurado por defecto. Si quieres usar el tuyo, crea un archivo `.env` con `GOOGLE_CLIENT_ID=tu-client-id`
 
