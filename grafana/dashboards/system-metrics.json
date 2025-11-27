@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "title": "Sistema - Métricas Generales",
+    "tags": ["sistema", "docker"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "CPU Usage por Contenedor",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{name=~\"tienda-.*\"}[5m]) * 100",
+            "legendFormat": "{{name}}"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Memoria Usage por Contenedor",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{name=~\"tienda-.*\"} / 1024 / 1024",
+            "legendFormat": "{{name}}",
+            "format": "MB"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Network I/O",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "rate(container_network_receive_bytes_total{name=~\"tienda-.*\"}[5m])",
+            "legendFormat": "{{name}} - RX"
+          },
+          {
+            "expr": "rate(container_network_transmit_bytes_total{name=~\"tienda-.*\"}[5m])",
+            "legendFormat": "{{name}} - TX"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Estado de Contenedores",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "up{job=\"prometheus\"}",
+            "legendFormat": "Prometheus"
+          },
+          {
+            "expr": "up{job=\"backend\"}",
+            "legendFormat": "Backend"
+          },
+          {
+            "expr": "up{job=\"mongodb\"}",
+            "legendFormat": "MongoDB"
+          }
+        ]
+      }
+    ],
+    "refresh": "10s",
+    "schemaVersion": 27,
+    "version": 1
+  }
+}
+

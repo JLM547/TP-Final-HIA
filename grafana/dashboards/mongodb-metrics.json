@@ -1,0 +1,61 @@
+{
+  "dashboard": {
+    "title": "MongoDB - Métricas de Base de Datos",
+    "tags": ["mongodb", "database"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Operaciones por Segundo",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "rate(mongodb_opcounters[5m])",
+            "legendFormat": "{{type}}"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Conexiones Activas",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "mongodb_connections{state=\"current\"}",
+            "legendFormat": "Conexiones Actuales"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Tamaño de Base de Datos",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "mongodb_dbstats_dataSize / 1024 / 1024",
+            "legendFormat": "Tamaño (MB)"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Consultas Lentas",
+        "type": "table",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "mongodb_operation_latencies_latency",
+            "format": "table"
+          }
+        ]
+      }
+    ],
+    "refresh": "10s",
+    "schemaVersion": 27,
+    "version": 1
+  }
+}
+
