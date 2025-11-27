@@ -1,5 +1,6 @@
 /* ===========================
    CONTENEDOR PRINCIPAL
+=========================== */
 .manage-products-container {
   font-family: 'Inter', sans-serif;
   padding: 30px;
@@ -14,6 +15,7 @@
 
 /* ===========================
    ENCABEZADO
+=========================== */
 .header-section {
   text-align: center;
   margin-bottom: 30px;
@@ -71,6 +73,7 @@
 
 /* ===========================
    FILTROS
+=========================== */
 .filters {
   display: flex;
   gap: 20px;
@@ -102,6 +105,7 @@
 
 /* ===========================
    MENSAJES
+=========================== */
 .loading-message,
 .no-data-message,
 .info-message {
@@ -145,6 +149,7 @@
 
 /* ===========================
    TABLA DE PRODUCTOS
+=========================== */
 .products-table-container {
   overflow-x: auto;
   margin-top: 30px;
@@ -213,6 +218,7 @@ td:last-child {
 
 /* ===========================
    IMÁGENES DE PRODUCTOS
+=========================== */
 .producto-image {
   width: 80px;
   height: 60px;
@@ -247,6 +253,7 @@ td:first-child {
 
 /* ===========================
    ESTADOS
+=========================== */
 .status-active {
   background-color: #d4edda;
   color: #155724;
@@ -267,6 +274,7 @@ td:first-child {
 
 /* ===========================
    BOTONES DE ACCIÓN
+=========================== */
 .action-button {
   background: none;
   border: none;
@@ -325,6 +333,7 @@ td:first-child {
 
 /* ===========================
    MODAL
+=========================== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -424,6 +433,7 @@ td:first-child {
 
 /* ===========================
    BOTÓN SALIR
+=========================== */
 .btn-salir {
   background: linear-gradient(45deg, #dc3545, #e74c3c);
   color: white;
@@ -445,6 +455,7 @@ td:first-child {
 
 /* ===========================
    RESPONSIVE
+=========================== */
 @media (max-width: 1200px) {
   .manage-products-container {
     padding: 20px;
