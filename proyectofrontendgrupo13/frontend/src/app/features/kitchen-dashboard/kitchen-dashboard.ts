@@ -40,6 +40,14 @@ export class KitchenDashboard implements OnInit, OnDestroy {
   showEntregados: boolean = false; // Control para mostrar pedidos entregados
   private searchTimeout: any; // Para debounce del buscador
 
+  // === VARIABLES DE PAGINACIÓN ===
+  paginaActual: number = 1;
+  limitePorPagina: number = 50;
+  totalPedidos: number = 0;
+  totalPaginas: number = 0;
+  tieneSiguiente: boolean = false;
+  tieneAnterior: boolean = false;
+
   private pedidosSubscription: Subscription | undefined; // Para manejar la suscripción y evitar fugas de memoria
 
   constructor(
@@ -88,12 +96,18 @@ export class KitchenDashboard implements OnInit, OnDestroy {
 
     console.log('Estados a cargar:', estadosACargar); // Debug
 
-    // Llama al servicio de pedidos, pasando los estados como filtro
-    this.pedidosSubscription = this.pedidoService.getPedidos(estadosACargar)
+    // Llama al servicio de pedidos con paginación
+    this.pedidosSubscription = this.pedidoService.getPedidos(estadosACargar, undefined, undefined, undefined, undefined, undefined, this.paginaActual, this.limitePorPagina)
       .pipe(
-        tap(data => {
+        tap(response => {
+          const data = response.pedidos;
           console.log('Pedidos recibidos del backend:', data.length); // Debug
-          console.log('Estados de pedidos recibidos:', data.map(p => p.estado)); // Debug
+          
+          // Actualizar información de paginación
+          this.totalPedidos = response.paginacion?.total || 0;
+          this.totalPaginas = response.paginacion?.totalPaginas || 0;
+          this.tieneSiguiente = response.paginacion?.tieneSiguiente || false;
+          this.tieneAnterior = response.paginacion?.tieneAnterior || false;
           
           // Si hay un término de búsqueda, filtra los pedidos en el frontend
           if (this.searchTerm) {
@@ -108,14 +122,14 @@ export class KitchenDashboard implements OnInit, OnDestroy {
             this.pedidos = data; // Asigna los pedidos recibidos sin filtrar
           }
           
-          console.log('Pedidos finales después de filtros:', this.pedidos.length); // Debug
+          console.log(`Pedidos cargados: ${this.pedidos.length} de ${this.totalPedidos} (Página ${this.paginaActual}/${this.totalPaginas})`); // Debug
           this.loading = false; // Desactiva el indicador de carga
         }),
         catchError((error: HttpErrorResponse) => {
           console.error('Error al cargar los pedidos:', error);
           this.errorMessage = `Error al cargar pedidos: ${error.error?.mensaje || error.message || 'Error desconocido'}`;
           this.loading = false; // Desactiva el indicador de carga incluso si hay error
-          return of([]); // Retorna un observable vacío para que el stream continúe sin errores fatales
+          return of({ pedidos: [], paginacion: { total: 0, pagina: 1, limite: 50, totalPaginas: 0, tieneSiguiente: false, tieneAnterior: false } }); // Retorna un observable vacío para que el stream continúe sin errores fatales
         })
       )
       .subscribe(); // Suscribirse al Observable para que se ejecute
@@ -131,6 +145,7 @@ export class KitchenDashboard implements OnInit, OnDestroy {
       .pipe(
         tap(() => {
           this.showSuccessMessage(`Estado del pedido ${pedidoId} actualizado a ${newStatus}`);
+          // Mantener la página actual al recargar
           this.loadPedidos(); // Recarga los pedidos para reflejar el cambio en la tabla
         }),
         catchError((error: HttpErrorResponse) => {
@@ -193,6 +208,9 @@ export class KitchenDashboard implements OnInit, OnDestroy {
       clearTimeout(this.searchTimeout);
     }
     
+    // Resetear a la primera página cuando se busca
+    this.paginaActual = 1;
+    
     // Establecer un nuevo timeout para ejecutar la búsqueda después de 500ms
     this.searchTimeout = setTimeout(() => {
       this.loadPedidos();
@@ -214,7 +232,51 @@ export class KitchenDashboard implements OnInit, OnDestroy {
     this.selectedEstado = 'todos';
     this.searchTerm = '';
     this.showEntregados = false;
+    this.paginaActual = 1;
     this.loadPedidos();
+  }
+
+  /**
+   * Cambia a la página especificada
+   */
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+      this.loadPedidos();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  /**
+   * Va a la página siguiente
+   */
+  paginaSiguiente(): void {
+    if (this.tieneSiguiente) {
+      this.cambiarPagina(this.paginaActual + 1);
+    }
+  }
+
+  /**
+   * Va a la página anterior
+   */
+  paginaAnterior(): void {
+    if (this.tieneAnterior) {
+      this.cambiarPagina(this.paginaActual - 1);
+    }
+  }
+
+  /**
+   * Va a la primera página
+   */
+  primeraPagina(): void {
+    this.cambiarPagina(1);
+  }
+
+  /**
+   * Va a la última página
+   */
+  ultimaPagina(): void {
+    this.cambiarPagina(this.totalPaginas);
   }
 
   /**

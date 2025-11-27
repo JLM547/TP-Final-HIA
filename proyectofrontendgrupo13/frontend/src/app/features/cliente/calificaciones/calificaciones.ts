@@ -102,10 +102,10 @@ export class CalificacionesComponent implements OnInit, OnDestroy {
     
     // Cargar pedidos con estado "entregado" que aún no han sido calificados por este cliente
     this.subscriptions.push(
-      this.pedidoService.getPedidos(['entregado']).subscribe({ // Asumiendo que el backend filtra por cliente autenticado
-        next: (data) => {
+      this.pedidoService.getPedidos(['entregado'], undefined, undefined, undefined, undefined, undefined, 1, 200).subscribe({ // Asumiendo que el backend filtra por cliente autenticado
+        next: (response) => {
+          const data = response.pedidos || [];
           console.log('DEBUG - Pedidos recibidos del backend:', data.length);
-          console.log('DEBUG - Primer pedido:', data[0]);
           
           // Filtrar pedidos que ya tienen una calificación
           const pedidosCalificadosIds = new Set(this.calificaciones.map(c => c.pedidoId));

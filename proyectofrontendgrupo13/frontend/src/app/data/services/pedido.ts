@@ -37,29 +37,27 @@ export class PedidoService {
   }
 
   /**
-   * @description Obtiene una lista de pedidos.
+   * @description Obtiene una lista de pedidos con información de paginación.
    * Dependiendo del rol, el backend filtra automáticamente.
-   * Para supervisor_cocina, se podría querer filtrar por estados específicos.
    * @param estados Opcional. Array de estados por los que filtrar (ej. ['pendiente', 'en_preparacion']).
    * @param page Opcional. Número de página (por defecto 1).
-   * @param limit Opcional. Límite de resultados por página (por defecto 100).
-   * @returns Un Observable con un array de pedidos.
+   * @param limit Opcional. Límite de resultados por página (por defecto 50, máximo 200).
+   * @returns Un Observable con un objeto que contiene pedidos y información de paginación.
    */
   getPedidos(
     estados?: string[],
     repartidorId?: string,
     clienteId?: string,
-    fechaDesde?: string, // Usamos string para que coincida con el input type="date"
-    fechaHasta?: string, // Usamos string para que coincida con el input type="date"
+    fechaDesde?: string,
+    fechaHasta?: string,
     searchTerm?: string,
     page?: number,
     limit?: number
-  ): Observable<IPedido[]> {
+  ): Observable<{ pedidos: IPedido[], paginacion: any }> {
     let params = new HttpParams();
 
     if (estados && estados.length > 0) {
       params = params.set('estados', estados.join(','));
-      console.log('Enviando estados al backend:', estados.join(',')); // Debug
     }
     if (repartidorId) {
       params = params.set('repartidorId', repartidorId);
@@ -74,7 +72,7 @@ export class PedidoService {
       params = params.set('fechaHasta', fechaHasta);
     }
     if (searchTerm) {
-      params = params.set('searchTerm', searchTerm); // Asume que tu backend maneja este filtro
+      params = params.set('searchTerm', searchTerm);
     }
     if (page) {
       params = params.set('page', page.toString());
@@ -83,24 +81,56 @@ export class PedidoService {
       params = params.set('limit', limit.toString());
     }
 
-    console.log('URL params enviados:', params.toString()); // Debug
-
-    // APLICA LOS ENCABEZADOS DE AUTENTICACIÓN AQUÍ
-    // El backend ahora retorna { pedidos: IPedido[], paginacion: {...} }
-    // Extraemos solo el array de pedidos para mantener compatibilidad
     return this.http.get<any>(PEDIDO_API, { headers: this.getAuthHeaders(), params })
       .pipe(
         map((response: any) => {
-          // Si la respuesta es un array (compatibilidad hacia atrás), lo devolvemos tal cual
+          // Si la respuesta es un array (compatibilidad hacia atrás)
           if (Array.isArray(response)) {
-            return response;
+            return {
+              pedidos: response,
+              paginacion: {
+                total: response.length,
+                pagina: 1,
+                limite: response.length,
+                totalPaginas: 1,
+                tieneSiguiente: false,
+                tieneAnterior: false
+              }
+            };
           }
-          // Si es un objeto con 'pedidos', extraemos el array
+          // Si es un objeto con 'pedidos' y 'paginacion'
+          if (response && response.pedidos && response.paginacion) {
+            return {
+              pedidos: response.pedidos,
+              paginacion: response.paginacion
+            };
+          }
+          // Si solo tiene 'pedidos' sin paginación
           if (response && response.pedidos) {
-            return response.pedidos;
+            return {
+              pedidos: response.pedidos,
+              paginacion: {
+                total: response.pedidos.length,
+                pagina: 1,
+                limite: response.pedidos.length,
+                totalPaginas: 1,
+                tieneSiguiente: false,
+                tieneAnterior: false
+              }
+            };
           }
-          // Si no, devolvemos un array vacío
-          return [];
+          // Si no, devolvemos vacío
+          return {
+            pedidos: [],
+            paginacion: {
+              total: 0,
+              pagina: 1,
+              limite: 50,
+              totalPaginas: 0,
+              tieneSiguiente: false,
+              tieneAnterior: false
+            }
+          };
         })
       );
   }
@@ -167,12 +197,12 @@ export class PedidoService {
    * @param estados Opcional. Array de estados por los que filtrar (ej. ['en_envio', 'entregado']).
    * @param page Opcional. Número de página.
    * @param limit Opcional. Límite de resultados por página.
-   * @returns Un Observable con un array de pedidos.
+   * @returns Un Observable con un objeto que contiene pedidos y información de paginación.
    */
-  getPedidosByRepartidorId(repartidorId: string, estados?: string[], page?: number, limit?: number): Observable<IPedido[]> {
+  getPedidosByRepartidorId(repartidorId: string, estados?: string[], page?: number, limit?: number): Observable<{ pedidos: IPedido[], paginacion: any }> {
     let params = new HttpParams().set('repartidorId', repartidorId);
     if (estados && estados.length > 0) {
-      params = params.set('estados', estados.join(',')); // Envía estados como una cadena separada por comas
+      params = params.set('estados', estados.join(','));
     }
     if (page) {
       params = params.set('page', page.toString());
@@ -181,20 +211,56 @@ export class PedidoService {
       params = params.set('limit', limit.toString());
     }
     // Llama al endpoint principal `/pedido` que tu `listarPedidos` ya maneja
-    // APLICA LOS ENCABEZADOS DE AUTENTICACIÓN AQUÍ
     return this.http.get<any>(PEDIDO_API, { headers: this.getAuthHeaders(), params })
       .pipe(
         map((response: any) => {
-          // Si la respuesta es un array (compatibilidad hacia atrás), lo devolvemos tal cual
+          // Si la respuesta es un array (compatibilidad hacia atrás)
           if (Array.isArray(response)) {
-            return response;
+            return {
+              pedidos: response,
+              paginacion: {
+                total: response.length,
+                pagina: 1,
+                limite: response.length,
+                totalPaginas: 1,
+                tieneSiguiente: false,
+                tieneAnterior: false
+              }
+            };
           }
-          // Si es un objeto con 'pedidos', extraemos el array
+          // Si es un objeto con 'pedidos' y 'paginacion'
+          if (response && response.pedidos && response.paginacion) {
+            return {
+              pedidos: response.pedidos,
+              paginacion: response.paginacion
+            };
+          }
+          // Si solo tiene 'pedidos' sin paginación
           if (response && response.pedidos) {
-            return response.pedidos;
+            return {
+              pedidos: response.pedidos,
+              paginacion: {
+                total: response.pedidos.length,
+                pagina: 1,
+                limite: response.pedidos.length,
+                totalPaginas: 1,
+                tieneSiguiente: false,
+                tieneAnterior: false
+              }
+            };
           }
-          // Si no, devolvemos un array vacío
-          return [];
+          // Si no, devolvemos vacío
+          return {
+            pedidos: [],
+            paginacion: {
+              total: 0,
+              pagina: 1,
+              limite: 50,
+              totalPaginas: 0,
+              tieneSiguiente: false,
+              tieneAnterior: false
+            }
+          };
         })
       );
   }

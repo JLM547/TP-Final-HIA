@@ -38,6 +38,15 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
   errorMessage = '';
   successMessage = '';
   loadingMap: boolean = false;
+  isAdmin: boolean = false; // Para detectar si el usuario es admin
+  
+  // === VARIABLES DE PAGINACIÓN ===
+  paginaActual: number = 1;
+  limitePorPagina: number = 50;
+  totalPedidos: number = 0;
+  totalPaginas: number = 0;
+  tieneSiguiente: boolean = false;
+  tieneAnterior: boolean = false;
 
   // === VARIABLES DEL MAPA ===
   map: any;
@@ -65,10 +74,22 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadRepartidorData();
-    this.loadPedidosAsignados();
-    if (this.isBrowser) {
-      this.loadGoogleMapsScript();
+    // Verificar si el usuario es admin
+    const currentUser = this.authService.currentUserValue;
+    this.isAdmin = currentUser?.rol === 'admin';
+    
+    // Si es admin, no necesita cargar perfil de repartidor, solo los pedidos
+    if (this.isAdmin) {
+      this.loadingRepartidor = false;
+      this.repartidor = null; // Admin no tiene perfil de repartidor
+      this.loadPedidosAsignados();
+    } else {
+      // Si es repartidor, cargar su perfil y pedidos
+      this.loadRepartidorData();
+      this.loadPedidosAsignados();
+      if (this.isBrowser) {
+        this.loadGoogleMapsScript();
+      }
     }
   }
 
@@ -108,41 +129,44 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
         
         if (repartidor) {
           console.log('Datos del repartidor cargados:', repartidor);
+        } else {
+          // Si no hay repartidor pero el usuario no es admin, mostrar error
+          if (!this.isAdmin) {
+            this.errorMessage = 'No se pudo cargar la información del repartidor. Por favor, intenta nuevamente.';
+          }
         }
       });
   }
 
   /**
-   * Carga los pedidos asignados al repartidor
+   * Carga los pedidos asignados al repartidor con paginación
    */
   loadPedidosAsignados(): void {
     this.loadingPedidos = true;
     
     // El backend ya filtra automáticamente por rol repartidor
     // Solo necesitamos especificar los estados que queremos ver
-    this.pedidoService.getPedidos(['en_envio', 'confirmado', 'en_preparacion'])
+    this.pedidoService.getPedidos(['en_envio', 'confirmado', 'en_preparacion'], undefined, undefined, undefined, undefined, undefined, this.paginaActual, this.limitePorPagina)
       .pipe(
         takeUntil(this.destroy$),
         catchError((error: HttpErrorResponse) => {
           console.error('Error cargando pedidos:', error);
-          console.error('Error completo:', JSON.stringify(error, null, 2));
           this.toastr.error(`Error al cargar pedidos: ${error.message || 'Error desconocido'}`, 'Error');
           this.pedidosAsignados = [];
           this.loadingPedidos = false;
-          return of([]);
+          return of({ pedidos: [], paginacion: { total: 0, pagina: 1, limite: 50, totalPaginas: 0, tieneSiguiente: false, tieneAnterior: false } });
         })
       )
       .subscribe({
-        next: (pedidos) => {
-          // El backend ya filtra correctamente, solo asignamos los pedidos recibidos
-          this.pedidosAsignados = pedidos || [];
+        next: (response) => {
+          this.pedidosAsignados = response.pedidos || [];
+          this.totalPedidos = response.paginacion?.total || 0;
+          this.totalPaginas = response.paginacion?.totalPaginas || 0;
+          this.tieneSiguiente = response.paginacion?.tieneSiguiente || false;
+          this.tieneAnterior = response.paginacion?.tieneAnterior || false;
           this.loadingPedidos = false;
-          console.log('Pedidos cargados para repartidor:', this.pedidosAsignados.length);
-          console.log('Pedidos:', this.pedidosAsignados);
           
-          if (this.pedidosAsignados.length === 0) {
-            console.log('No hay pedidos disponibles para este repartidor');
-          }
+          console.log(`Pedidos cargados: ${this.pedidosAsignados.length} de ${this.totalPedidos} (Página ${this.paginaActual}/${this.totalPaginas})`);
         },
         error: (error) => {
           console.error('Error en subscribe de pedidos:', error);
@@ -150,6 +174,50 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
           this.loadingPedidos = false;
         }
       });
+  }
+
+  /**
+   * Cambia a la página especificada
+   */
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+      this.loadPedidosAsignados();
+      // Scroll al inicio de la tabla
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  /**
+   * Va a la página siguiente
+   */
+  paginaSiguiente(): void {
+    if (this.tieneSiguiente) {
+      this.cambiarPagina(this.paginaActual + 1);
+    }
+  }
+
+  /**
+   * Va a la página anterior
+   */
+  paginaAnterior(): void {
+    if (this.tieneAnterior) {
+      this.cambiarPagina(this.paginaActual - 1);
+    }
+  }
+
+  /**
+   * Va a la primera página
+   */
+  primeraPagina(): void {
+    this.cambiarPagina(1);
+  }
+
+  /**
+   * Va a la última página
+   */
+  ultimaPagina(): void {
+    this.cambiarPagina(this.totalPaginas);
   }
 
   // === GESTIÓN DE PEDIDOS ===

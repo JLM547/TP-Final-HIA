@@ -177,8 +177,9 @@ export class ClientDashboard implements OnInit, OnDestroy {
     this.isLoadingPedidos = true;
 
     this.subscriptions.push(
-      this.pedidoService.getPedidos().subscribe({
-        next: (data) => {
+      this.pedidoService.getPedidos(undefined, undefined, undefined, undefined, undefined, undefined, 1, 200).subscribe({
+        next: (response) => {
+          const data = response.pedidos || [];
           this.pedidos = data;
           // Separar pedidos recientes (últimos 5) del historial completo
           this.pedidosRecientes = data.slice(0, 5);

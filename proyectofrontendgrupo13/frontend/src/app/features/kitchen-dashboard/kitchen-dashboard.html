@@ -125,5 +125,42 @@
         </tr>
       </tbody>
     </table>
+    
+    <!-- Controles de Paginación -->
+    <div *ngIf="pedidos.length > 0 && totalPaginas > 1" class="pagination-controls">
+      <button 
+        class="pagination-btn" 
+        [disabled]="!tieneAnterior" 
+        (click)="primeraPagina()"
+        title="Primera página">
+        &lt;&lt;
+      </button>
+      <button 
+        class="pagination-btn" 
+        [disabled]="!tieneAnterior" 
+        (click)="paginaAnterior()"
+        title="Página anterior">
+        &lt;
+      </button>
+      
+      <span class="pagination-info">
+        Página {{ paginaActual }} de {{ totalPaginas }} ({{ totalPedidos }} pedidos)
+      </span>
+      
+      <button 
+        class="pagination-btn" 
+        [disabled]="!tieneSiguiente" 
+        (click)="paginaSiguiente()"
+        title="Página siguiente">
+        &gt;
+      </button>
+      <button 
+        class="pagination-btn" 
+        [disabled]="!tieneSiguiente" 
+        (click)="ultimaPagina()"
+        title="Última página">
+        &gt;&gt;
+      </button>
+    </div>
   </div>
 </div>
