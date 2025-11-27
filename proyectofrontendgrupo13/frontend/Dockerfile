@@ -13,16 +13,18 @@ RUN npm ci
 # Copiar el resto del código
 COPY . .
 
-# Construir la aplicación Angular (con configuración de producción explícita)
+# Construir la aplicación Angular (usando configuración docker sin SSR)
 # Aumentar memoria de Node.js para builds grandes
 ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN npm run build -- --configuration production || (echo "Build failed. Checking dist directory..." && ls -la dist/ && exit 1)
+RUN npm run build -- --configuration docker || (echo "Build failed. Checking dist directory..." && ls -la dist/ && exit 1)
 
 # Verificar que los archivos se generaron correctamente
 RUN if [ ! -d "dist/frontend/browser" ]; then \
     echo "Error: dist/frontend/browser directory not found!" && \
     echo "Contents of dist:" && \
-    ls -la dist/ && \
+    (ls -la dist/ 2>/dev/null || echo "dist directory does not exist") && \
+    echo "Contents of dist/frontend:" && \
+    (ls -la dist/frontend/ 2>/dev/null || echo "dist/frontend does not exist") && \
     exit 1; \
     fi
 
