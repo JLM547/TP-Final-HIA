@@ -1,4 +1,4 @@
-# Backend - Grupo 13
+# Backend
 
 Backend del proyecto desarrollado con Node.js, Express y MongoDB.
 

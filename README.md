@@ -1,4 +1,4 @@
-# Proyecto Final - Grupo 13
+# Proyecto Final
 
 Proyecto completo con backend y frontend para el trabajo práctico final, dockerizado con monitoreo en tiempo real y CI/CD automatizado.
 
@@ -40,7 +40,7 @@ DEFINITIVOTPFinal-PYSW/
 ├── docker-compose.yml           # Orquestación de todos los servicios
 ├── .github/
 │   └── workflows/
-│       └── ci-cd.yml           # Pipeline de CI/CD con GitHub Actions
+│       └── ci-cd-deploy.yml           # Pipeline de CI/CD con GitHub Actions
 ├── CI-CD.md                     # Manual completo de CI/CD
 └── README.md                    # Este archivo
 ```

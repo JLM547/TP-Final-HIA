@@ -1,4 +1,4 @@
-# Frontend - Grupo 13
+# Frontend
 
 Frontend del proyecto desarrollado con Angular 20.
 

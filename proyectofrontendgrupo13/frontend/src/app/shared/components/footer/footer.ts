@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
 export class Footer {
   currentYear = new Date().getFullYear();
   
-  // Integrantes del Grupo 13
+  // Integrantes del proyecto
   integrantes = [
     'FLORES, Jonatan Uziel',
     'MORALES, Jeremias Leonel',
