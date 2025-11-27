@@ -58,7 +58,6 @@
               "outputHashing": "all"
             },
             "docker": {
-              "outputMode": "static",
               "budgets": [
                 {
                   "type": "initial",
