@@ -37,50 +37,32 @@ export class PedidoService {
   }
 
   /**
-<<<<<<< HEAD
    * @description Obtiene una lista de pedidos con información de paginación.
    * Dependiendo del rol, el backend filtra automáticamente.
    * @param estados Opcional. Array de estados por los que filtrar (ej. ['pendiente', 'en_preparacion']).
+   * @param repartidorId Opcional. ID del repartidor para filtrar.
+   * @param clienteId Opcional. ID del cliente para filtrar.
+   * @param fechaDesde Opcional. Fecha desde para filtrar.
+   * @param fechaHasta Opcional. Fecha hasta para filtrar.
+   * @param searchTerm Opcional. Término de búsqueda.
    * @param page Opcional. Número de página (por defecto 1).
    * @param limit Opcional. Límite de resultados por página (por defecto 50, máximo 200).
    * @returns Un Observable con un objeto que contiene pedidos y información de paginación.
-=======
-   * @description Obtiene una lista de pedidos.
-   * Dependiendo del rol, el backend filtra automáticamente.
-   * Para supervisor_cocina, se podría querer filtrar por estados específicos.
-   * @param estados Opcional. Array de estados por los que filtrar (ej. ['pendiente', 'en_preparacion']).
-   * @param page Opcional. Número de página (por defecto 1).
-   * @param limit Opcional. Límite de resultados por página (por defecto 100).
-   * @returns Un Observable con un array de pedidos.
->>>>>>> master
    */
   getPedidos(
     estados?: string[],
     repartidorId?: string,
     clienteId?: string,
-<<<<<<< HEAD
     fechaDesde?: string,
     fechaHasta?: string,
     searchTerm?: string,
     page?: number,
     limit?: number
   ): Observable<{ pedidos: IPedido[], paginacion: any }> {
-=======
-    fechaDesde?: string, // Usamos string para que coincida con el input type="date"
-    fechaHasta?: string, // Usamos string para que coincida con el input type="date"
-    searchTerm?: string,
-    page?: number,
-    limit?: number
-  ): Observable<IPedido[]> {
->>>>>>> master
     let params = new HttpParams();
 
     if (estados && estados.length > 0) {
       params = params.set('estados', estados.join(','));
-<<<<<<< HEAD
-=======
-      console.log('Enviando estados al backend:', estados.join(',')); // Debug
->>>>>>> master
     }
     if (repartidorId) {
       params = params.set('repartidorId', repartidorId);
@@ -95,11 +77,7 @@ export class PedidoService {
       params = params.set('fechaHasta', fechaHasta);
     }
     if (searchTerm) {
-<<<<<<< HEAD
       params = params.set('searchTerm', searchTerm);
-=======
-      params = params.set('searchTerm', searchTerm); // Asume que tu backend maneja este filtro
->>>>>>> master
     }
     if (page) {
       params = params.set('page', page.toString());
@@ -108,7 +86,6 @@ export class PedidoService {
       params = params.set('limit', limit.toString());
     }
 
-<<<<<<< HEAD
     return this.http.get<any>(PEDIDO_API, { headers: this.getAuthHeaders(), params })
       .pipe(
         map((response: any) => {
@@ -159,26 +136,6 @@ export class PedidoService {
               tieneAnterior: false
             }
           };
-=======
-    console.log('URL params enviados:', params.toString()); // Debug
-
-    // APLICA LOS ENCABEZADOS DE AUTENTICACIÓN AQUÍ
-    // El backend ahora retorna { pedidos: IPedido[], paginacion: {...} }
-    // Extraemos solo el array de pedidos para mantener compatibilidad
-    return this.http.get<any>(PEDIDO_API, { headers: this.getAuthHeaders(), params })
-      .pipe(
-        map((response: any) => {
-          // Si la respuesta es un array (compatibilidad hacia atrás), lo devolvemos tal cual
-          if (Array.isArray(response)) {
-            return response;
-          }
-          // Si es un objeto con 'pedidos', extraemos el array
-          if (response && response.pedidos) {
-            return response.pedidos;
-          }
-          // Si no, devolvemos un array vacío
-          return [];
->>>>>>> master
         })
       );
   }
@@ -245,21 +202,12 @@ export class PedidoService {
    * @param estados Opcional. Array de estados por los que filtrar (ej. ['en_envio', 'entregado']).
    * @param page Opcional. Número de página.
    * @param limit Opcional. Límite de resultados por página.
-<<<<<<< HEAD
    * @returns Un Observable con un objeto que contiene pedidos y información de paginación.
    */
   getPedidosByRepartidorId(repartidorId: string, estados?: string[], page?: number, limit?: number): Observable<{ pedidos: IPedido[], paginacion: any }> {
     let params = new HttpParams().set('repartidorId', repartidorId);
     if (estados && estados.length > 0) {
       params = params.set('estados', estados.join(','));
-=======
-   * @returns Un Observable con un array de pedidos.
-   */
-  getPedidosByRepartidorId(repartidorId: string, estados?: string[], page?: number, limit?: number): Observable<IPedido[]> {
-    let params = new HttpParams().set('repartidorId', repartidorId);
-    if (estados && estados.length > 0) {
-      params = params.set('estados', estados.join(',')); // Envía estados como una cadena separada por comas
->>>>>>> master
     }
     if (page) {
       params = params.set('page', page.toString());
@@ -268,7 +216,6 @@ export class PedidoService {
       params = params.set('limit', limit.toString());
     }
     // Llama al endpoint principal `/pedido` que tu `listarPedidos` ya maneja
-<<<<<<< HEAD
     return this.http.get<any>(PEDIDO_API, { headers: this.getAuthHeaders(), params })
       .pipe(
         map((response: any) => {
@@ -319,22 +266,6 @@ export class PedidoService {
               tieneAnterior: false
             }
           };
-=======
-    // APLICA LOS ENCABEZADOS DE AUTENTICACIÓN AQUÍ
-    return this.http.get<any>(PEDIDO_API, { headers: this.getAuthHeaders(), params })
-      .pipe(
-        map((response: any) => {
-          // Si la respuesta es un array (compatibilidad hacia atrás), lo devolvemos tal cual
-          if (Array.isArray(response)) {
-            return response;
-          }
-          // Si es un objeto con 'pedidos', extraemos el array
-          if (response && response.pedidos) {
-            return response.pedidos;
-          }
-          // Si no, devolvemos un array vacío
-          return [];
->>>>>>> master
         })
       );
   }

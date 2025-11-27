@@ -50,19 +50,11 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
 
     // Llama a getPedidos() sin parámetros, ya que el backend debe filtrar por el cliente autenticado
     this.subscriptions.push(
-<<<<<<< HEAD
       this.pedidoService.getPedidos(undefined, undefined, undefined, undefined, undefined, undefined, 1, 200).subscribe({
         next: (response) => {
           this.pedidos = response.pedidos || [];
           this.isLoading = false;
           console.log('Pedidos cargados para el cliente:', this.pedidos.length);
-=======
-      this.pedidoService.getPedidos().subscribe({
-        next: (data) => {
-          this.pedidos = data;
-          this.isLoading = false;
-          console.log('Pedidos cargados para el cliente:', this.pedidos);
->>>>>>> master
         },
         error: (err) => {
           console.error('Error al cargar mis pedidos:', err);

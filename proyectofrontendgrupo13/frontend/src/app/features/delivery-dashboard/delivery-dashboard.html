@@ -1,12 +1,9 @@
 <div class="delivery-dashboard-container">
   <div class="dashboard-header">
     <h2><i class="fas fa-truck"></i> Dashboard del Repartidor</h2>
-<<<<<<< HEAD
     <p *ngIf="isAdmin" class="admin-notice">
       <i class="fas fa-info-circle"></i> Vista de administrador: Puedes ver todos los pedidos disponibles
     </p>
-=======
->>>>>>> master
   </div>
 
   <div *ngIf="loadingRepartidor || loadingPedidos" class="loading-message message-card">
@@ -21,15 +18,9 @@
     <i class="fas fa-check-circle"></i> {{ successMessage }}
   </div>
 
-<<<<<<< HEAD
   <div *ngIf="(repartidor || isAdmin) && !loadingRepartidor" class="main-content">
     <div class="profile-stats-section">
       <div class="profile-card interactive-card compact-card" *ngIf="repartidor">
-=======
-  <div *ngIf="repartidor && !loadingRepartidor" class="main-content">
-    <div class="profile-stats-section">
-      <div class="profile-card interactive-card compact-card">
->>>>>>> master
         <h3><i class="fas fa-user-circle"></i> Mi Perfil</h3>
         <div class="profile-table compact-table">
           <table class="info-table compact-table">
@@ -69,11 +60,7 @@
         </div>
       </div>
 
-<<<<<<< HEAD
       <div class="stats-grid" *ngIf="repartidor">
-=======
-      <div class="stats-grid">
->>>>>>> master
         <div class="stat-card interactive-card compact-card">
           <div class="stat-icon">
             <i class="fas fa-star"></i>
@@ -111,11 +98,7 @@
       </div>
     </div>
 
-<<<<<<< HEAD
     <div class="status-actions-section" *ngIf="repartidor">
-=======
-    <div class="status-actions-section">
->>>>>>> master
       <div class="status-card interactive-card compact-card">
         <h3><i class="fas fa-toggle-on"></i> Estado Actual</h3>
         <div class="status-display">
@@ -145,20 +128,12 @@
       </div>
     </div>
 
-<<<<<<< HEAD
     <section class="map-section" *ngIf="repartidor">
-=======
-    <section class="map-section">
->>>>>>> master
       <div class="map-card interactive-card compact-card">
         <div class="card-header">
           <h2><i class="fas fa-map-marked-alt"></i> Mi Ubicación</h2>
           <div class="map-controls">
-<<<<<<< HEAD
             <button (click)="startLocationTracking()" [disabled]="isTrackingLocation"
-=======
-            <button (click)="startLocationTracking()" [disabled]="isTrackingLocation || !repartidor"
->>>>>>> master
               class="map-btn start-btn">
               <i class="fas fa-play"></i>
               Iniciar Seguimiento
@@ -179,11 +154,7 @@
       </div>
     </section>
 
-<<<<<<< HEAD
     <div class="orders-section compact-card" *ngIf="(repartidor || isAdmin) && !loadingPedidos">
-=======
-    <div class="orders-section compact-card" *ngIf="repartidor && !loadingPedidos">
->>>>>>> master
       <div class="section-header">
         <h3><i class="fas fa-shopping-bag"></i> Pedidos Disponibles</h3>
         <div class="orders-count">
@@ -231,7 +202,6 @@
               </td>
               <td class="order-actions">
                 <button
-<<<<<<< HEAD
                   *ngIf="(pedido.estado === 'confirmado' || pedido.estado === 'en_preparacion' || pedido.estado === 'en_envio') && !pedido.repartidorId && !isAdmin"
                   (click)="takeOrder(pedido._id!)" class="btn-action btn-primary btn-sm">
                   <i class="fas fa-truck"></i> Tomar
@@ -243,22 +213,11 @@
                 <span *ngIf="isAdmin" class="admin-view-only">
                   <i class="fas fa-eye"></i> Vista Admin
                 </span>
-=======
-                  *ngIf="(pedido.estado === 'confirmado' || pedido.estado === 'en_preparacion' || pedido.estado === 'en_envio') && !pedido.repartidorId"
-                  (click)="takeOrder(pedido._id!)" class="btn-action btn-primary btn-sm">
-                  <i class="fas fa-truck"></i> Tomar
-                </button>
-                <button *ngIf="pedido.estado === 'en_envio' && pedido.repartidorId" (click)="deliverOrder(pedido)"
-                  class="btn-action btn-success btn-sm">
-                  <i class="fas fa-check"></i> Entregar
-                </button>
->>>>>>> master
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-<<<<<<< HEAD
       
       <!-- Controles de Paginación -->
       <div *ngIf="pedidosAsignados.length > 0 && totalPaginas > 1" class="pagination-controls">
@@ -297,8 +256,6 @@
         </button>
       </div>
       
-=======
->>>>>>> master
       <ng-template #noPedidos>
         <div class="empty-state">
           <i class="fas fa-box-open"></i>
@@ -308,11 +265,7 @@
     </div>
 
     <div class="history-section compact-card"
-<<<<<<< HEAD
       *ngIf="repartidor && repartidor.historialEntregas && repartidor.historialEntregas.length > 0">
-=======
-      *ngIf="repartidor.historialEntregas && repartidor.historialEntregas.length > 0">
->>>>>>> master
       <div class="section-header">
         <h3><i class="fas fa-history"></i> Historial de Entregas</h3>
         <span class="history-count">Últimas {{ repartidor.historialEntregas.length > 5 ? 5 :
@@ -354,11 +307,7 @@
     </div>
   </div>
 
-<<<<<<< HEAD
   <div *ngIf="!repartidor && !isAdmin && !loadingRepartidor" class="error-state compact-card">
-=======
-  <div *ngIf="!repartidor && !loadingRepartidor" class="error-state compact-card">
->>>>>>> master
     <i class="fas fa-exclamation-triangle"></i>
     <h3>Error al cargar datos</h3>
     <p>No se pudo cargar la información del repartidor. Por favor, intenta nuevamente.</p>

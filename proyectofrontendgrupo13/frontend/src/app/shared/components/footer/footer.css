@@ -173,7 +173,6 @@
   font-size: 0.9rem;
 }
 
-<<<<<<< HEAD
 .footer-authors {
   margin: 15px 0;
   padding: 15px;
@@ -196,17 +195,12 @@
   margin: 0;
 }
 
-=======
->>>>>>> master
 .footer-bottom-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
-<<<<<<< HEAD
   margin-top: 15px;
-=======
->>>>>>> master
 }
 
 .footer-bottom-link {

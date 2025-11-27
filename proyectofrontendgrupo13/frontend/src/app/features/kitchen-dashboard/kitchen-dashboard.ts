@@ -40,7 +40,6 @@ export class KitchenDashboard implements OnInit, OnDestroy {
   showEntregados: boolean = false; // Control para mostrar pedidos entregados
   private searchTimeout: any; // Para debounce del buscador
 
-<<<<<<< HEAD
   // === VARIABLES DE PAGINACIÓN ===
   paginaActual: number = 1;
   limitePorPagina: number = 50;
@@ -49,8 +48,6 @@ export class KitchenDashboard implements OnInit, OnDestroy {
   tieneSiguiente: boolean = false;
   tieneAnterior: boolean = false;
 
-=======
->>>>>>> master
   private pedidosSubscription: Subscription | undefined; // Para manejar la suscripción y evitar fugas de memoria
 
   constructor(
@@ -99,7 +96,6 @@ export class KitchenDashboard implements OnInit, OnDestroy {
 
     console.log('Estados a cargar:', estadosACargar); // Debug
 
-<<<<<<< HEAD
     // Llama al servicio de pedidos con paginación
     this.pedidosSubscription = this.pedidoService.getPedidos(estadosACargar, undefined, undefined, undefined, undefined, undefined, this.paginaActual, this.limitePorPagina)
       .pipe(
@@ -112,14 +108,6 @@ export class KitchenDashboard implements OnInit, OnDestroy {
           this.totalPaginas = response.paginacion?.totalPaginas || 0;
           this.tieneSiguiente = response.paginacion?.tieneSiguiente || false;
           this.tieneAnterior = response.paginacion?.tieneAnterior || false;
-=======
-    // Llama al servicio de pedidos, pasando los estados como filtro
-    this.pedidosSubscription = this.pedidoService.getPedidos(estadosACargar)
-      .pipe(
-        tap(data => {
-          console.log('Pedidos recibidos del backend:', data.length); // Debug
-          console.log('Estados de pedidos recibidos:', data.map(p => p.estado)); // Debug
->>>>>>> master
           
           // Si hay un término de búsqueda, filtra los pedidos en el frontend
           if (this.searchTerm) {
@@ -134,22 +122,14 @@ export class KitchenDashboard implements OnInit, OnDestroy {
             this.pedidos = data; // Asigna los pedidos recibidos sin filtrar
           }
           
-<<<<<<< HEAD
           console.log(`Pedidos cargados: ${this.pedidos.length} de ${this.totalPedidos} (Página ${this.paginaActual}/${this.totalPaginas})`); // Debug
-=======
-          console.log('Pedidos finales después de filtros:', this.pedidos.length); // Debug
->>>>>>> master
           this.loading = false; // Desactiva el indicador de carga
         }),
         catchError((error: HttpErrorResponse) => {
           console.error('Error al cargar los pedidos:', error);
           this.errorMessage = `Error al cargar pedidos: ${error.error?.mensaje || error.message || 'Error desconocido'}`;
           this.loading = false; // Desactiva el indicador de carga incluso si hay error
-<<<<<<< HEAD
           return of({ pedidos: [], paginacion: { total: 0, pagina: 1, limite: 50, totalPaginas: 0, tieneSiguiente: false, tieneAnterior: false } }); // Retorna un observable vacío para que el stream continúe sin errores fatales
-=======
-          return of([]); // Retorna un observable vacío para que el stream continúe sin errores fatales
->>>>>>> master
         })
       )
       .subscribe(); // Suscribirse al Observable para que se ejecute
@@ -165,10 +145,7 @@ export class KitchenDashboard implements OnInit, OnDestroy {
       .pipe(
         tap(() => {
           this.showSuccessMessage(`Estado del pedido ${pedidoId} actualizado a ${newStatus}`);
-<<<<<<< HEAD
           // Mantener la página actual al recargar
-=======
->>>>>>> master
           this.loadPedidos(); // Recarga los pedidos para reflejar el cambio en la tabla
         }),
         catchError((error: HttpErrorResponse) => {
@@ -231,12 +208,9 @@ export class KitchenDashboard implements OnInit, OnDestroy {
       clearTimeout(this.searchTimeout);
     }
     
-<<<<<<< HEAD
     // Resetear a la primera página cuando se busca
     this.paginaActual = 1;
     
-=======
->>>>>>> master
     // Establecer un nuevo timeout para ejecutar la búsqueda después de 500ms
     this.searchTimeout = setTimeout(() => {
       this.loadPedidos();
@@ -258,15 +232,11 @@ export class KitchenDashboard implements OnInit, OnDestroy {
     this.selectedEstado = 'todos';
     this.searchTerm = '';
     this.showEntregados = false;
-<<<<<<< HEAD
     this.paginaActual = 1;
-=======
->>>>>>> master
     this.loadPedidos();
   }
 
   /**
-<<<<<<< HEAD
    * Cambia a la página especificada
    */
   cambiarPagina(pagina: number): void {
@@ -310,8 +280,6 @@ export class KitchenDashboard implements OnInit, OnDestroy {
   }
 
   /**
-=======
->>>>>>> master
    * Maneja la acción de cerrar sesión.
    * Llama al servicio de autenticación para cerrar la sesión y redirige al usuario.
    */
