@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  glpi-db:
+    image: mysql:8
+    container_name: glpi-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: glpidb
+      MYSQL_USER: glpi
+      MYSQL_PASSWORD: glpipass
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+  glpi:
+    image: diouxx/glpi
+    container_name: glpi-web
+    restart: always
+    ports:
+      - "8085:80"
+    environment:
+      TIMEZONE: America/Argentina/Buenos_Aires
+    depends_on:
+      - glpi-db
+    volumes:
+      - ./glpi:/var/www/html
+
+networks:
+  default:
+    driver: bridge
