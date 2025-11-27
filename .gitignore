@@ -42,6 +42,8 @@ build/
 *.sql
 backup/
 backups/
+!backups/README.md
+!backup/README.md
 dump/
 mongodb-backup/
 proybackendgrupo13/scripts/*.zip
@@ -53,6 +55,7 @@ proybackendgrupo13/scripts/mongodb-backup/
 # Logs
 # ============================================
 logs/
+!logs/README.md
 *.log
 
 # ============================================
