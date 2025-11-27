@@ -11,4 +11,13 @@ import { RouterLink } from '@angular/router';
 })
 export class Footer {
   currentYear = new Date().getFullYear();
+  
+  // Integrantes del Grupo 13
+  integrantes = [
+    'FLORES, Jonatan Uziel',
+    'MORALES, Jeremias Leonel',
+    'MORALES, Malena',
+    'GUTIERREZ, Sergio Leonardo',
+    'BARBOZA, Gonzalo'
+  ];
 }

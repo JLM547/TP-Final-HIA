@@ -173,11 +173,34 @@
   font-size: 0.9rem;
 }
 
+.footer-authors {
+  margin: 15px 0;
+  padding: 15px;
+  background-color: rgba(217, 120, 73, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #d97849;
+}
+
+.authors-title {
+  color: #d97849;
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.authors-names {
+  color: #e0d0b8;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
 .footer-bottom-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
+  margin-top: 15px;
 }
 
 .footer-bottom-link {

@@ -1,6 +1,14 @@
 # Proyecto Final - Grupo 13
 
-Proyecto completo con backend y frontend para el trabajo práctico final, dockerizado con monitoreo en tiempo real.
+Proyecto completo con backend y frontend para el trabajo práctico final, dockerizado con monitoreo en tiempo real y CI/CD automatizado.
+
+## 👥 Integrantes
+
+- FLORES, Jonatan Uziel
+- MORALES, Jeremias Leonel
+- MORALES, Malena
+- GUTIERREZ, Sergio Leonardo
+- BARBOZA, Gonzalo
 
 ## 📁 Estructura del Proyecto
 
@@ -30,6 +38,10 @@ DEFINITIVOTPFinal-PYSW/
 │   └── init-mongo.js
 │
 ├── docker-compose.yml           # Orquestación de todos los servicios
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml           # Pipeline de CI/CD con GitHub Actions
+├── CI-CD.md                     # Manual completo de CI/CD
 └── README.md                    # Este archivo
 ```
 
@@ -242,10 +254,40 @@ El proyecto incluye los siguientes contenedores:
 5. **prometheus**: Sistema de monitoreo y alertas
 6. **grafana**: Visualización de métricas y dashboards
 
+## 🚀 CI/CD - Integración y Despliegue Continuo
+
+Este proyecto incluye un pipeline automatizado de CI/CD usando **GitHub Actions** que:
+
+- ✅ Detecta cambios en la rama `main` (push o merge)
+- ✅ Construye automáticamente las imágenes Docker (Backend y Frontend)
+- ✅ Publica las imágenes en Docker Hub con tags únicos
+- ✅ Genera un resumen del proceso
+
+### Configuración Rápida
+
+1. **Configurar Secrets en GitHub**:
+   - Ve a tu repositorio → Settings → Secrets and variables → Actions
+   - Agrega `DOCKER_HUB_USERNAME` (tu usuario de Docker Hub)
+   - Agrega `DOCKER_HUB_TOKEN` (token de acceso de Docker Hub)
+
+2. **Hacer un commit de prueba**:
+   ```bash
+   git add .
+   git commit -m "test: Validar pipeline CI/CD"
+   git push origin main
+   ```
+
+3. **Verificar en GitHub Actions**:
+   - Ve a la pestaña "Actions" en tu repositorio
+   - El workflow se ejecutará automáticamente
+
+📖 **Documentación completa**: Ver [CI-CD.md](./CI-CD.md) para instrucciones detalladas.
+
 ## 📚 Documentación Adicional
 
 - Ver `proybackendgrupo13/README.md` para más detalles del backend
 - Ver `proyectofrontendgrupo13/frontend/README.md` para más detalles del frontend
+- Ver `CI-CD.md` para documentación completa del pipeline CI/CD
 
 ## ⚠️ Notas Importantes
 
