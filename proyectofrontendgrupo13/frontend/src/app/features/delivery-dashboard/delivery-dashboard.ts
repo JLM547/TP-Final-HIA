@@ -38,6 +38,7 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
   errorMessage = '';
   successMessage = '';
   loadingMap: boolean = false;
+<<<<<<< HEAD
   isAdmin: boolean = false; // Para detectar si el usuario es admin
   
   // === VARIABLES DE PAGINACIÓN ===
@@ -47,6 +48,8 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
   totalPaginas: number = 0;
   tieneSiguiente: boolean = false;
   tieneAnterior: boolean = false;
+=======
+>>>>>>> master
 
   // === VARIABLES DEL MAPA ===
   map: any;
@@ -74,6 +77,7 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+<<<<<<< HEAD
     // Verificar si el usuario es admin
     const currentUser = this.authService.currentUserValue;
     this.isAdmin = currentUser?.rol === 'admin';
@@ -90,6 +94,12 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
       if (this.isBrowser) {
         this.loadGoogleMapsScript();
       }
+=======
+    this.loadRepartidorData();
+    this.loadPedidosAsignados();
+    if (this.isBrowser) {
+      this.loadGoogleMapsScript();
+>>>>>>> master
     }
   }
 
@@ -129,28 +139,40 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
         
         if (repartidor) {
           console.log('Datos del repartidor cargados:', repartidor);
+<<<<<<< HEAD
         } else {
           // Si no hay repartidor pero el usuario no es admin, mostrar error
           if (!this.isAdmin) {
             this.errorMessage = 'No se pudo cargar la información del repartidor. Por favor, intenta nuevamente.';
           }
+=======
+>>>>>>> master
         }
       });
   }
 
   /**
+<<<<<<< HEAD
    * Carga los pedidos asignados al repartidor con paginación
+=======
+   * Carga los pedidos asignados al repartidor
+>>>>>>> master
    */
   loadPedidosAsignados(): void {
     this.loadingPedidos = true;
     
     // El backend ya filtra automáticamente por rol repartidor
     // Solo necesitamos especificar los estados que queremos ver
+<<<<<<< HEAD
     this.pedidoService.getPedidos(['en_envio', 'confirmado', 'en_preparacion'], undefined, undefined, undefined, undefined, undefined, this.paginaActual, this.limitePorPagina)
+=======
+    this.pedidoService.getPedidos(['en_envio', 'confirmado', 'en_preparacion'])
+>>>>>>> master
       .pipe(
         takeUntil(this.destroy$),
         catchError((error: HttpErrorResponse) => {
           console.error('Error cargando pedidos:', error);
+<<<<<<< HEAD
           this.toastr.error(`Error al cargar pedidos: ${error.message || 'Error desconocido'}`, 'Error');
           this.pedidosAsignados = [];
           this.loadingPedidos = false;
@@ -167,6 +189,26 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
           this.loadingPedidos = false;
           
           console.log(`Pedidos cargados: ${this.pedidosAsignados.length} de ${this.totalPedidos} (Página ${this.paginaActual}/${this.totalPaginas})`);
+=======
+          console.error('Error completo:', JSON.stringify(error, null, 2));
+          this.toastr.error(`Error al cargar pedidos: ${error.message || 'Error desconocido'}`, 'Error');
+          this.pedidosAsignados = [];
+          this.loadingPedidos = false;
+          return of([]);
+        })
+      )
+      .subscribe({
+        next: (pedidos) => {
+          // El backend ya filtra correctamente, solo asignamos los pedidos recibidos
+          this.pedidosAsignados = pedidos || [];
+          this.loadingPedidos = false;
+          console.log('Pedidos cargados para repartidor:', this.pedidosAsignados.length);
+          console.log('Pedidos:', this.pedidosAsignados);
+          
+          if (this.pedidosAsignados.length === 0) {
+            console.log('No hay pedidos disponibles para este repartidor');
+          }
+>>>>>>> master
         },
         error: (error) => {
           console.error('Error en subscribe de pedidos:', error);
@@ -176,6 +218,7 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
       });
   }
 
+<<<<<<< HEAD
   /**
    * Cambia a la página especificada
    */
@@ -220,6 +263,8 @@ export class DeliveryDashboard implements OnInit, OnDestroy {
     this.cambiarPagina(this.totalPaginas);
   }
 
+=======
+>>>>>>> master
   // === GESTIÓN DE PEDIDOS ===
 
   /**

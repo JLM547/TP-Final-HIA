@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 })
 export class Footer {
   currentYear = new Date().getFullYear();
+<<<<<<< HEAD
   
   // Integrantes del proyecto
   integrantes = [
@@ -20,4 +21,6 @@ export class Footer {
     'GUTIERREZ, Sergio Leonardo',
     'BARBOZA, Gonzalo'
   ];
+=======
+>>>>>>> master
 }

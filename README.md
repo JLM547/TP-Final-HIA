@@ -1,6 +1,6 @@
-# Proyecto Final
+# Proyecto Final - Grupo 13
 
-Proyecto completo con backend y frontend para el trabajo práctico final, dockerizado con monitoreo en tiempo real y CI/CD automatizado.
+Proyecto completo con backend y frontend para el trabajo práctico final, dockerizado con monitoreo en tiempo real.
 
 ## 👥 Integrantes
 
@@ -37,11 +37,18 @@ DEFINITIVOTPFinal-PYSW/
 ├── database/                    # Scripts de inicialización
 │   └── init-mongo.js
 │
+├── nextcloud/                   # Gestión Documental (NextCloud)
+│   ├── documentacion/          # Documentación técnica
+│   ├── reportes/              # Reportes generados
+│   ├── backups/               # Backups de configuración
+│   ├── logs/                  # Logs del sistema
+│   └── ia-analytics/          # Módulo de IA para análisis
+│
+├── Punto7-GLPI/                # Gestión de Incidencias (GLPI)
+│   ├── docker-compose.yml     # Configuración de GLPI
+│   └── glpi/                  # Aplicación GLPI
+│
 ├── docker-compose.yml           # Orquestación de todos los servicios
-├── .github/
-│   └── workflows/
-│       └── ci-cd-deploy.yml           # Pipeline de CI/CD con GitHub Actions
-├── CI-CD.md                     # Manual completo de CI/CD
 └── README.md                    # Este archivo
 ```
 
@@ -79,13 +86,13 @@ docker-compose ps
 ```
 
 5. **Acceder a los servicios:**
-   - **Frontend**: http://localhost:8080
+   - **Frontend**: http://localhost
    - **Backend API**: http://localhost:3000/api
    - **Mongo Express**: http://localhost:8081 (usuario: `admin`, contraseña: `admin123`)
    - **Prometheus**: http://localhost:9090
    - **Grafana**: http://localhost:3001 (usuario: `admin`, contraseña: `admin` por defecto)
-
-   **⚠️ Nota:** Si tienes AppServ u otro servidor web usando el puerto 80, el frontend se ejecuta en el puerto 8080 para evitar conflictos.
+   - **NextCloud**: http://localhost:8080 (usuario: `admin`, contraseña: `admin123` por defecto)
+   - **GLPI** (Gestión de Incidencias): http://localhost:8085 (ver carpeta `Punto7-GLPI/` para más detalles)
 
 **Comandos útiles:**
 ```bash
@@ -243,6 +250,84 @@ docker exec -i tienda-mongodb mongorestore --uri="mongodb://admin:admin123@local
 - **Monitoreo**: Prometheus, Grafana, MongoDB Exporter
 - **Otras**: OpenAI API (para generación de imágenes), Google OAuth
 
+<<<<<<< HEAD
+=======
+## 📁 NextCloud - Gestión Documental
+
+NextCloud está configurado para almacenar y compartir documentación técnica, reportes, respaldos de configuración y registros del proyecto.
+
+### Acceso a NextCloud
+
+- **URL**: http://localhost:8080
+- **Usuario administrador**: `admin` (configurable con variable de entorno `NEXTCLOUD_ADMIN_USER`)
+- **Contraseña**: `admin123` (configurable con variable de entorno `NEXTCLOUD_ADMIN_PASSWORD`)
+
+### Estructura de Carpetas
+
+NextCloud está configurado con las siguientes carpetas predefinidas:
+
+1. **Documentación** (`/Documentacion`): Documentación técnica del proyecto
+   - Arquitectura del sistema
+   - Manuales de instalación y configuración
+   - Documentación de APIs
+   - Archivos de configuración
+
+2. **Reportes** (`/Reportes`): Reportes generados
+   - Reportes de desempeño
+   - Métricas de Prometheus y Grafana
+   - Reportes generados por IA
+   - Reportes de pruebas
+
+3. **Backups** (`/Backups`): Respaldo de configuración
+   - Backups de base de datos
+   - Backups de configuración Docker
+   - Snapshots del sistema
+
+4. **Logs** (`/Logs`): Registros del sistema
+   - Logs de aplicación
+   - Logs de base de datos
+   - Logs de Docker
+   - Logs de monitoreo
+
+### Módulo de IA para Análisis de Datos (Opcional)
+
+El proyecto incluye un módulo de IA que analiza la analítica de datos generada y produce informes automáticos de desempeño.
+
+#### Características del Módulo de IA
+
+- **Análisis de Métricas**: Analiza métricas de Prometheus (CPU, memoria, red, requests HTTP)
+- **Detección de Anomalías**: Usa Isolation Forest para detectar comportamientos anómalos
+- **Generación de Reportes**: Genera reportes PDF y JSON automáticamente
+- **Recomendaciones**: Proporciona recomendaciones basadas en el análisis
+
+#### Uso del Módulo de IA
+
+```bash
+# Ejecutar análisis manualmente
+docker-compose run --rm ia-analytics python analytics_ai.py
+
+# Los reportes se generan en nextcloud/reportes/
+```
+
+#### Configuración
+
+El módulo de IA se puede configurar mediante variables de entorno en `docker-compose.yml`:
+
+- `PROMETHEUS_URL`: URL de Prometheus (por defecto: `http://prometheus:9090`)
+- `OUTPUT_DIR`: Directorio de salida para reportes (por defecto: `/app/reportes`)
+
+### Variables de Entorno para NextCloud
+
+Puedes configurar NextCloud mediante variables de entorno en `docker-compose.yml` o un archivo `.env`:
+
+```env
+NEXTCLOUD_ADMIN_USER=admin
+NEXTCLOUD_ADMIN_PASSWORD=admin123
+NEXTCLOUD_DB_ROOT_PASSWORD=nextcloud_root_pass
+NEXTCLOUD_DB_PASSWORD=nextcloud_pass
+```
+
+>>>>>>> master
 ## 🐳 Servicios Docker
 
 El proyecto incluye los siguientes contenedores:
@@ -253,6 +338,7 @@ El proyecto incluye los siguientes contenedores:
 4. **mongo-express**: Interfaz web para gestionar MongoDB
 5. **prometheus**: Sistema de monitoreo y alertas
 6. **grafana**: Visualización de métricas y dashboards
+<<<<<<< HEAD
 
 ## 🚀 CI/CD - Integración y Despliegue Continuo
 
@@ -282,20 +368,34 @@ Este proyecto incluye un pipeline automatizado de CI/CD usando **GitHub Actions*
    - El workflow se ejecutará automáticamente
 
 📖 **Documentación completa**: Ver [CI-CD.md](./CI-CD.md) para instrucciones detalladas.
+=======
+7. **nextcloud-db**: Base de datos MariaDB para NextCloud
+8. **nextcloud**: Servidor NextCloud para gestión documental
+>>>>>>> master
 
 ## 📚 Documentación Adicional
 
 - Ver `proybackendgrupo13/README.md` para más detalles del backend
 - Ver `proyectofrontendgrupo13/frontend/README.md` para más detalles del frontend
+<<<<<<< HEAD
 - Ver `CI-CD.md` para documentación completa del pipeline CI/CD
+=======
+>>>>>>> master
 
 ## ⚠️ Notas Importantes
 
 - **Variables de entorno**: Usa `.env` para configuraciones sensibles (no subir a GitHub)
+<<<<<<< HEAD
 - **Puertos**: Asegúrate de que los puertos 8080, 3000, 3001, 8081, 9090, 27017 estén disponibles
   - Si tienes AppServ u otro servidor en el puerto 80, el frontend usará el puerto 8080 automáticamente
 - **Datos persistentes**: Los datos de MongoDB y Grafana se guardan en volúmenes Docker
 - **Primera ejecución**: La primera vez puede tardar más debido a la construcción de imágenes
 - **OPENAI_API_KEY**: Es **opcional**. Si no la configuras, la generación de imágenes estará deshabilitada pero la aplicación funcionará normalmente
 - **Google OAuth**: El Client ID está configurado por defecto. Si quieres usar el tuyo, crea un archivo `.env` con `GOOGLE_CLIENT_ID=tu-client-id`
+=======
+- **Puertos**: Asegúrate de que los puertos 80, 3000, 3001, 8080, 9090, 27017 estén disponibles
+- **Datos persistentes**: Los datos de MongoDB, Grafana y NextCloud se guardan en volúmenes Docker
+- **Primera ejecución**: La primera vez puede tardar más debido a la construcción de imágenes
+- **NextCloud**: La primera configuración puede tardar 1-2 minutos. Accede a http://localhost:8080 y completa el setup inicial si es necesario
+>>>>>>> master
 

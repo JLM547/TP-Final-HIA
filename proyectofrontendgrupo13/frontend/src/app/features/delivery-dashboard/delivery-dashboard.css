@@ -41,6 +41,7 @@ h4 {
     font-size: 1.2rem;
 }
 
+<<<<<<< HEAD
 /* --- Controles de Paginación --- */
 .pagination-controls {
   display: flex;
@@ -94,6 +95,8 @@ h4 {
   gap: 5px;
 }
 
+=======
+>>>>>>> master
 /* --- Estilos de Tarjetas y Secciones --- */
 
 .interactive-card {
@@ -116,6 +119,7 @@ h4 {
     padding-bottom: 15px;
 }
 
+<<<<<<< HEAD
 .admin-notice {
     color: #a6ada3;
     font-size: 0.95rem;
@@ -126,6 +130,8 @@ h4 {
     display: inline-block;
 }
 
+=======
+>>>>>>> master
 .main-content {
     display: grid;
     gap: 25px;

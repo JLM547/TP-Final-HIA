@@ -1,6 +1,7 @@
 // proyecto/backend/controllers/imageGeneration.controller.js
 const { OpenAI } = require('openai');
 
+<<<<<<< HEAD
 // Función para obtener el cliente de OpenAI (lazy initialization)
 let openaiClient = null;
 function getOpenAIClient() {
@@ -14,10 +15,26 @@ function getOpenAIClient() {
         });
     }
     return openaiClient;
+=======
+// Función para obtener el cliente de OpenAI (inicialización lazy)
+let openai = null;
+function getOpenAIClient() {
+    if (!openai) {
+        const apiKey = process.env.OPENAI_API_KEY;
+        if (!apiKey) {
+            throw new Error('OPENAI_API_KEY no está configurada. La funcionalidad de generación de imágenes está deshabilitada.');
+        }
+        openai = new OpenAI({
+            apiKey: apiKey,
+        });
+    }
+    return openai;
+>>>>>>> master
 }
 
 exports.generateImage = async (req, res) => {
     try {
+<<<<<<< HEAD
         // Verificar si OpenAI está configurado
         if (!process.env.OPENAI_API_KEY) {
             return res.status(503).json({ 
@@ -28,6 +45,21 @@ exports.generateImage = async (req, res) => {
 
         const { prompt } = req.body;
 
+=======
+        const { prompt } = req.body;
+
+        // Verificar si OpenAI está configurado
+        let client;
+        try {
+            client = getOpenAIClient();
+        } catch (error) {
+            return res.status(503).json({ 
+                mensaje: 'Servicio de generación de imágenes no disponible. OPENAI_API_KEY no está configurada.',
+                error: error.message 
+            });
+        }
+
+>>>>>>> master
         // ***** AQUÍ ES DONDE DEBES AGREGAR ESTAS LÍNEAS *****
         console.log('Prompt recibido del frontend:', prompt);
         console.log('Longitud del prompt:', prompt ? prompt.length : 0);
@@ -37,11 +69,16 @@ exports.generateImage = async (req, res) => {
             return res.status(400).json({ mensaje: 'El prompt es requerido para generar la imagen.' });
         }
 
+<<<<<<< HEAD
         // Obtener el cliente de OpenAI (lazy initialization)
         const openai = getOpenAIClient();
 
         // Llamada a la API de DALL-E
         const response = await openai.images.generate({
+=======
+        // Llamada a la API de DALL-E
+        const response = await client.images.generate({
+>>>>>>> master
             model: "dall-e-2", // Puedes probar con "dall-e-3" si tienes acceso y quieres mayor calidad (considera el costo)
             prompt: prompt,
             n: 1, // Generar una sola imagen

@@ -44,7 +44,7 @@ services:
     networks:
       - tienda-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8081 || exit 1"]
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8081 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -88,13 +88,13 @@ services:
     container_name: tienda-frontend
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
       - backend
     networks:
       - tienda-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost || exit 1"]
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -120,7 +120,7 @@ services:
     networks:
       - tienda-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy || exit 1"]
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:9090/-/healthy || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -147,7 +147,7 @@ services:
     networks:
       - tienda-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health || exit 1"]
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:3000/api/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -170,6 +170,85 @@ services:
   #   networks:
   #     - tienda-network
 
+  # MariaDB para NextCloud
+  nextcloud-db:
+    image: mariadb:10.11
+    container_name: tienda-nextcloud-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${NEXTCLOUD_DB_ROOT_PASSWORD:-nextcloud_root_pass}
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: ${NEXTCLOUD_DB_PASSWORD:-nextcloud_pass}
+    volumes:
+      - nextcloud_db_data:/var/lib/mysql
+    networks:
+      - tienda-network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NextCloud - Gestión Documental
+  nextcloud:
+    image: nextcloud:latest
+    container_name: tienda-nextcloud
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER:-admin}
+      - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_ADMIN_PASSWORD:-admin123}
+      - MYSQL_HOST=nextcloud-db
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PASSWORD:-nextcloud_pass}
+      - NEXTCLOUD_TRUSTED_DOMAINS=localhost 127.0.0.1 *.loca.lt loca.lt
+    volumes:
+      - nextcloud_data:/var/www/html
+    command: >
+      bash -c "
+      chown -R www-data:www-data /var/www/html/data || true &&
+      chmod -R 755 /var/www/html/data || true &&
+      /entrypoint.sh apache2-foreground
+      "
+    depends_on:
+      nextcloud-db:
+        condition: service_healthy
+    networks:
+      - tienda-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/status.php || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Módulo de IA para Análisis de Datos (Opcional)
+  ia-analytics:
+    build:
+      context: ./nextcloud/ia-analytics
+      dockerfile: Dockerfile
+    container_name: tienda-ia-analytics
+    restart: "no"  # Solo se ejecuta manualmente
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+      - OUTPUT_DIR=/app/reportes
+      - MONGODB_URI=mongodb://admin:admin123@mongo-db:27017/tienda?authSource=admin
+      - NEXTCLOUD_DATA_PATH=/var/www/html/data
+    volumes:
+      - ./nextcloud/reportes:/app/reportes
+      - nextcloud_data:/var/www/html/data:ro  # Acceso de solo lectura a NextCloud
+    depends_on:
+      - prometheus
+      - mongo-db
+      - nextcloud
+    networks:
+      - tienda-network
+    profiles:
+      - ia  # Solo se ejecuta con --profile ia
+
 volumes:
   mongodb_data:
     driver: local
@@ -178,6 +257,10 @@ volumes:
   prometheus_data:
     driver: local
   grafana_data:
+    driver: local
+  nextcloud_db_data:
+    driver: local
+  nextcloud_data:
     driver: local
 
 networks:

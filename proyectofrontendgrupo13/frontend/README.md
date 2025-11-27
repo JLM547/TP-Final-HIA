@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Frontend
+=======
+# Frontend - Grupo 13
+>>>>>>> master
 
 Frontend del proyecto desarrollado con Angular 20.
 
