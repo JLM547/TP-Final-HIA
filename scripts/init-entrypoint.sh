@@ -5,6 +5,11 @@ KEY1="/keys/key1/key"
 KEY2="/keys/key2/key"
 KEY3="/keys/key3/key"
 
+# Crear las carpetas si no existen
+mkdir -p "$(dirname "$KEY1")"
+mkdir -p "$(dirname "$KEY2")"
+mkdir -p "$(dirname "$KEY3")"
+
 # Verificar si existe la llave principal
 if [ ! -f "$KEY1" ]; then
   echo "Keyfile no encontrado, creando..."
@@ -22,6 +27,7 @@ if [ ! -f "$KEY1" ]; then
 else
   echo "Keyfile ya existe, no se crea uno nuevo."
 fi
+
 sleep 5
 # Ejecutar el comando original
 #exec mongod --replSet myReplicaSet --bind_ip_all --keyFile /keys/key1/key
