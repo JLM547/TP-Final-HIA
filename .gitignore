@@ -122,3 +122,21 @@ jspm_packages/
 # keys
 # ============================================
 .keys/
+
+# ============================================
+# Security / Punto 9 - Allow documentation and scripts
+# ============================================
+# Permitir explícitamente la carpeta docs/ y sus contenidos
+!docs/
+!docs/**
+
+# Ignorar certificados SSL generados (archivos sensibles)
+ssl/
+*.pem
+*.key
+*.crt
+*.cert
+!*.pem.example
+!*.key.example
+!*.crt.example
+!*.cert.example
