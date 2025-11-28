@@ -88,7 +88,7 @@ services:
     container_name: tienda-frontend
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       - backend
     networks:
@@ -196,7 +196,7 @@ services:
     container_name: tienda-nextcloud
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8082:80"
     environment:
       - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER:-admin}
       - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_ADMIN_PASSWORD:-admin123}

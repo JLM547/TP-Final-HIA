@@ -15,38 +15,71 @@ Proyecto completo con backend y frontend para el trabajo práctico final, docker
 ```
 DEFINITIVOTPFinal-PYSW/
 ├── proybackendgrupo13/          # Backend (Node.js + Express + MongoDB)
-│   ├── Dockerfile               # Configuración Docker para backend
-│   ├── config.example.js        # Plantilla de configuración
+│   ├── controllers/            # Controladores de la API
+│   ├── models/                 # Modelos de MongoDB/Mongoose
+│   ├── routes/                 # Rutas de la API
+│   ├── middleware/             # Middleware (autenticación, etc.)
+│   ├── services/               # Servicios (email, etc.)
+│   ├── scripts/                # Scripts auxiliares
+│   ├── Dockerfile              # Configuración Docker para backend
+│   ├── config.example.js       # Plantilla de configuración
+│   ├── config.js               # Configuración del backend
+│   ├── database.js             # Conexión a MongoDB
+│   ├── index.js                # Punto de entrada del servidor
 │   ├── package.json
-│   └── README.md                # Instrucciones del backend
+│   └── README.md               # Instrucciones del backend
 │
 ├── proyectofrontendgrupo13/    # Frontend (Angular)
 │   └── frontend/
-│       ├── Dockerfile           # Configuración Docker para frontend
+│       ├── src/
+│       │   └── app/
+│       │       ├── core/       # Servicios core (auth, interceptors)
+│       │       ├── data/       # Servicios de datos
+│       │       ├── features/   # Módulos de funcionalidades
+│       │       │   ├── admin/  # Panel de administración
+│       │       │   ├── auth/   # Autenticación (login, register)
+│       │       │   ├── cliente/# Funcionalidades de cliente
+│       │       │   ├── productos/# Gestión de productos
+│       │       │   └── ...     # Otros módulos
+│       │       └── shared/     # Componentes compartidos
+│       ├── public/             # Archivos estáticos
+│       ├── Dockerfile          # Configuración Docker para frontend
 │       ├── nginx.conf          # Configuración Nginx
+│       ├── angular.json        # Configuración de Angular
 │       ├── package.json
-│       └── README.md            # Instrucciones del frontend
+│       └── README.md           # Instrucciones del frontend
 │
-├── prometheus/                  # Configuración de Prometheus
+├── prometheus/                 # Configuración de Prometheus
 │   └── prometheus.yml
 │
 ├── grafana/                     # Configuración de Grafana
-│   ├── provisioning/           # Datasources y dashboards
+│   ├── provisioning/           # Configuración automática
+│   │   ├── datasources/        # Fuentes de datos
+│   │   └── dashboards/         # Configuración de dashboards
 │   └── dashboards/             # Dashboards JSON
+│       ├── system-metrics.json
+│       ├── mongodb-metrics.json
+│       └── backend-metrics.json
 │
 ├── database/                    # Scripts de inicialización
 │   └── init-mongo.js
 │
 ├── nextcloud/                   # Gestión Documental (NextCloud)
 │   ├── documentacion/          # Documentación técnica
-│   ├── reportes/              # Reportes generados
-│   ├── backups/               # Backups de configuración
-│   ├── logs/                  # Logs del sistema
-│   └── ia-analytics/          # Módulo de IA para análisis
+│   ├── reportes/               # Reportes generados
+│   ├── backups/                # Backups de configuración
+│   ├── logs/                   # Logs del sistema
+│   └── ia-analytics/           # Módulo de IA para análisis
+│       ├── analytics_ai.py     # Script de análisis con IA
+│       ├── Dockerfile
+│       ├── requirements.txt
+│       └── README.md
 │
-├── Punto7-GLPI/                # Gestión de Incidencias (GLPI)
-│   ├── docker-compose.yml     # Configuración de GLPI
-│   └── glpi/                  # Aplicación GLPI
+├── scripts/                     # Scripts auxiliares del proyecto
+│   ├── export-db-for-github.sh # Script para exportar BD
+│   ├── export-db-for-github.bat
+│   ├── agregar-ngrok.ps1       # Scripts para ngrok
+│   └── ...                     # Otros scripts
 │
 ├── docker-compose.yml           # Orquestación de todos los servicios
 └── README.md                    # Este archivo
@@ -86,13 +119,12 @@ docker-compose ps
 ```
 
 5. **Acceder a los servicios:**
-   - **Frontend**: http://localhost
+   - **Frontend**: http://localhost:8080
    - **Backend API**: http://localhost:3000/api
    - **Mongo Express**: http://localhost:8081 (usuario: `admin`, contraseña: `admin123`)
    - **Prometheus**: http://localhost:9090
    - **Grafana**: http://localhost:3001 (usuario: `admin`, contraseña: `admin` por defecto)
-   - **NextCloud**: http://localhost:8080 (usuario: `admin`, contraseña: `admin123` por defecto)
-   - **GLPI** (Gestión de Incidencias): http://localhost:8085 (ver carpeta `Punto7-GLPI/` para más detalles)
+   - **NextCloud**: http://localhost:8082 (usuario: `admin`, contraseña: `admin123` por defecto)
 
 **Comandos útiles:**
 ```bash
@@ -250,15 +282,13 @@ docker exec -i tienda-mongodb mongorestore --uri="mongodb://admin:admin123@local
 - **Monitoreo**: Prometheus, Grafana, MongoDB Exporter
 - **Otras**: OpenAI API (para generación de imágenes), Google OAuth
 
-<<<<<<< HEAD
-=======
 ## 📁 NextCloud - Gestión Documental
 
 NextCloud está configurado para almacenar y compartir documentación técnica, reportes, respaldos de configuración y registros del proyecto.
 
 ### Acceso a NextCloud
 
-- **URL**: http://localhost:8080
+- **URL**: http://localhost:8082
 - **Usuario administrador**: `admin` (configurable con variable de entorno `NEXTCLOUD_ADMIN_USER`)
 - **Contraseña**: `admin123` (configurable con variable de entorno `NEXTCLOUD_ADMIN_PASSWORD`)
 
@@ -327,7 +357,6 @@ NEXTCLOUD_DB_ROOT_PASSWORD=nextcloud_root_pass
 NEXTCLOUD_DB_PASSWORD=nextcloud_pass
 ```
 
->>>>>>> master
 ## 🐳 Servicios Docker
 
 El proyecto incluye los siguientes contenedores:
@@ -338,7 +367,9 @@ El proyecto incluye los siguientes contenedores:
 4. **mongo-express**: Interfaz web para gestionar MongoDB
 5. **prometheus**: Sistema de monitoreo y alertas
 6. **grafana**: Visualización de métricas y dashboards
-<<<<<<< HEAD
+7. **nextcloud-db**: Base de datos MariaDB para NextCloud
+8. **nextcloud**: Servidor NextCloud para gestión documental
+9. **ia-analytics**: Módulo de IA para análisis de métricas y generación de reportes
 
 ## 🚀 CI/CD - Integración y Despliegue Continuo
 
@@ -367,35 +398,20 @@ Este proyecto incluye un pipeline automatizado de CI/CD usando **GitHub Actions*
    - Ve a la pestaña "Actions" en tu repositorio
    - El workflow se ejecutará automáticamente
 
-📖 **Documentación completa**: Ver [CI-CD.md](./CI-CD.md) para instrucciones detalladas.
-=======
-7. **nextcloud-db**: Base de datos MariaDB para NextCloud
-8. **nextcloud**: Servidor NextCloud para gestión documental
->>>>>>> master
-
 ## 📚 Documentación Adicional
 
 - Ver `proybackendgrupo13/README.md` para más detalles del backend
 - Ver `proyectofrontendgrupo13/frontend/README.md` para más detalles del frontend
-<<<<<<< HEAD
-- Ver `CI-CD.md` para documentación completa del pipeline CI/CD
-=======
->>>>>>> master
 
 ## ⚠️ Notas Importantes
 
 - **Variables de entorno**: Usa `.env` para configuraciones sensibles (no subir a GitHub)
-<<<<<<< HEAD
-- **Puertos**: Asegúrate de que los puertos 8080, 3000, 3001, 8081, 9090, 27017 estén disponibles
-  - Si tienes AppServ u otro servidor en el puerto 80, el frontend usará el puerto 8080 automáticamente
-- **Datos persistentes**: Los datos de MongoDB y Grafana se guardan en volúmenes Docker
+- **Puertos**: Asegúrate de que los puertos 8080, 8082, 3000, 3001, 8081, 9090, 27017 estén disponibles
+  - Frontend: http://localhost:8080
+  - NextCloud: http://localhost:8082
+- **Datos persistentes**: Los datos de MongoDB, Grafana y NextCloud se guardan en volúmenes Docker
 - **Primera ejecución**: La primera vez puede tardar más debido a la construcción de imágenes
 - **OPENAI_API_KEY**: Es **opcional**. Si no la configuras, la generación de imágenes estará deshabilitada pero la aplicación funcionará normalmente
 - **Google OAuth**: El Client ID está configurado por defecto. Si quieres usar el tuyo, crea un archivo `.env` con `GOOGLE_CLIENT_ID=tu-client-id`
-=======
-- **Puertos**: Asegúrate de que los puertos 80, 3000, 3001, 8080, 9090, 27017 estén disponibles
-- **Datos persistentes**: Los datos de MongoDB, Grafana y NextCloud se guardan en volúmenes Docker
-- **Primera ejecución**: La primera vez puede tardar más debido a la construcción de imágenes
-- **NextCloud**: La primera configuración puede tardar 1-2 minutos. Accede a http://localhost:8080 y completa el setup inicial si es necesario
->>>>>>> master
+- **NextCloud**: La primera configuración puede tardar 1-2 minutos. Accede a http://localhost:8082 y completa el setup inicial si es necesario
 

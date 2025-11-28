@@ -199,11 +199,7 @@ exports.listarPedidos = async (req, res) => {
                 });
             } else {
                 // Para otros roles, simplemente aplicamos el filtro de estados
-<<<<<<< HEAD
-            query.estado = { $in: estadosArray };
-=======
                 query.estado = { $in: estadosArray };
->>>>>>> master
             }
             console.log('Query final en backend:', JSON.stringify(query, null, 2)); // Debug
         }

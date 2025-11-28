@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # Backend
-=======
-# Backend - Grupo 13
->>>>>>> master
 
 Backend del proyecto desarrollado con Node.js, Express y MongoDB.
 
