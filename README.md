@@ -357,6 +357,43 @@ NEXTCLOUD_DB_ROOT_PASSWORD=nextcloud_root_pass
 NEXTCLOUD_DB_PASSWORD=nextcloud_pass
 ```
 
+## 🚨 Punto 7 - Gestión de Incidencias (GLPI)
+
+El **Punto 7** del proyecto corresponde a la **instalación, configuración y uso del sistema de gestión de incidencias GLPI**. Este servicio se maneja como un **servidor externo** en un repositorio separado.
+
+### Repositorio Externo
+
+- **Repositorio**: [Punto-7---Gestion-de-Incidencias](https://github.com/JonatanFlores418/Punto-7---Gestion-de-Incidencias.git)
+- **Descripción**: Implementación completa de GLPI con Docker + Docker Compose
+
+### Acceso al Servicio
+
+El GLPI utilizado por el equipo está disponible mediante acceso remoto:
+
+- **URL de acceso remoto**: https://bicolor-nondescribable-karri.ngrok-free.dev
+- **Nota**: El enlace puede estar activo solo durante horarios de presentación, ya que depende del túnel local (Ngrok)
+
+### Características
+
+- 📦 Contenedor con **GLPI (Web UI)**
+- 🗄️ Contenedor con **MySQL** como base de datos
+- 🔧 Configuración para desplegar desde cero
+- 🌐 Acceso web local y remoto mediante Ngrok
+
+### Instalación Local (Opcional)
+
+Si deseas ejecutar GLPI localmente, puedes clonar el repositorio externo:
+
+```bash
+git clone https://github.com/JonatanFlores418/Punto-7---Gestion-de-Incidencias.git
+cd Punto-7---Gestion-de-Incidencias
+docker compose up -d
+```
+
+Luego acceder a `http://localhost:8085` y completar la configuración inicial.
+
+Para más detalles sobre la instalación y configuración, consulta el [README del repositorio de GLPI](https://github.com/JonatanFlores418/Punto-7---Gestion-de-Incidencias.git).
+
 ## 🐳 Servicios Docker
 
 El proyecto incluye los siguientes contenedores:
