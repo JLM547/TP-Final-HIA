@@ -17,7 +17,7 @@ if [ ! -f "$KEY1" ]; then
   chmod 400 "$KEY1"
   chown 999:999 "$KEY1"
 
-  # Copiar la llave recién creada a las demás rutas
+  # Copiar la llave reciÃ©n creada a las demÃ¡s rutas
   cp "$KEY1" "$KEY2"
   cp "$KEY1" "$KEY3"
   chmod 400 "$KEY2"
@@ -25,10 +25,25 @@ if [ ! -f "$KEY1" ]; then
   chmod 400 "$KEY3"
   chown 999:999 "$KEY3"
 else
-  echo "Keyfile ya existe, no se crea uno nuevo."
+  echo "Keyfile ya existe, corrigiendo permisos..."
+  # Siempre corregir permisos incluso si el archivo existe
+  chmod 400 "$KEY1"
+  chown 999:999 "$KEY1"
+  
+  # Asegurar que las otras llaves tambiÃ©n existen y tienen permisos correctos
+  if [ ! -f "$KEY2" ]; then
+    cp "$KEY1" "$KEY2"
+  fi
+  if [ ! -f "$KEY3" ]; then
+    cp "$KEY1" "$KEY3"
+  fi
+  chmod 400 "$KEY2"
+  chown 999:999 "$KEY2"
+  chmod 400 "$KEY3"
+  chown 999:999 "$KEY3"
 fi
 
 sleep 5
 # Ejecutar el comando original
-#exec mongod --replSet myReplicaSet --bind_ip_all --keyFile /keys/key1/key
-exec mongod --replSet myReplicaSet --bind_ip_all
+exec mongod --replSet myReplicaSet --bind_ip_all --keyFile /keys/key1/key
+#exec mongod --replSet myReplicaSet --bind_ip_all

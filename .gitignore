@@ -36,27 +36,31 @@ build/
 *.tsbuildinfo
 
 # ============================================
-# Database backups and exports
+# Database backups and exports (SENSIBLE)
 # ============================================
 *.dump
 *.sql
+*.bson
+*.metadata.json
 backup/
 backups/
 !backups/README.md
 !backup/README.md
 dump/
 mongodb-backup/
+tienda/
 proybackendgrupo13/scripts/*.zip
 proybackendgrupo13/scripts/*.tar.gz
 proybackendgrupo13/scripts/backup/
 proybackendgrupo13/scripts/mongodb-backup/
 
 # ============================================
-# Logs
+# Logs (pueden contener información sensible)
 # ============================================
 logs/
 !logs/README.md
 *.log
+*.log.*
 
 # ============================================
 # IDE and Editor files
@@ -119,24 +123,71 @@ coverage/
 jspm_packages/
 
 # ============================================
-# keys
+# MongoDB Replica Set keyFiles (SENSIBLE)
 # ============================================
 .keys/
+keys/
+!keys/README.md
 
 # ============================================
-# Security / Punto 9 - Allow documentation and scripts
+# SSL/TLS Certificates and Keys (SENSIBLE)
 # ============================================
-# Permitir explícitamente la carpeta docs/ y sus contenidos
-!docs/
-!docs/**
-
-# Ignorar certificados SSL generados (archivos sensibles)
 ssl/
 *.pem
 *.key
 *.crt
 *.cert
+*.cer
+*.pfx
+*.p12
 !*.pem.example
 !*.key.example
 !*.crt.example
 !*.cert.example
+
+# ============================================
+# Security / Punto 9 - Documentación y Scripts
+# ============================================
+# Permitir documentación de seguridad
+!docs/
+!docs/**
+
+# Permitir scripts de seguridad (NO los certificados generados)
+!scripts/generate-selfsigned-cert.sh
+!scripts/generate-selfsigned-cert.ps1
+!scripts/setup-firewall.sh
+!scripts/setup-firewall.ps1
+
+# ============================================
+# Archivos de configuración sensibles
+# ============================================
+# No subir configuraciones con datos reales
+**/config.js
+**/secrets.json
+**/credentials.json
+**/*secret*
+**/*password*
+**/*token*
+
+# ============================================
+# Archivos de evidencia con información sensible
+# ============================================
+evidencia_*.txt
+evidencia_*.log
+*_token*.txt
+*_password*.txt
+*_secret*.txt
+
+# ============================================
+# Docker volumes y datos persistentes
+# ============================================
+docker-data/
+volumes/
+*.volume
+
+# ============================================
+# Archivos de sesión y autenticación
+# ============================================
+*.session
+*.session.*
+sessions/
