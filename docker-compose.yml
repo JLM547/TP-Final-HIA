@@ -2,6 +2,7 @@ services:
   # MongoDB Database
   mongo-db:
     image: mongo:7.0
+    hostname: mongo1
     container_name: tienda-mongodb
     restart: unless-stopped
     environment:
@@ -10,10 +11,13 @@ services:
       MONGO_INITDB_DATABASE: tienda
     ports:
       - "27017:27017"
+    entrypoint: ["/scripts/init-entrypoint.sh"]
     volumes:
       - mongodb_data:/data/db
       - mongodb_config:/data/configdb
       - ./database/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./keys:/keys
+      - ./scripts:/scripts
     networks:
       - tienda-network
     healthcheck:
@@ -21,6 +25,51 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    
+  mongo-db2:
+    image: mongo:7.0
+    hostname: mongo2
+    container_name: mongo2
+    ports:
+      - 27018:27017
+    #entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip_all", "--keyFile", "keys/key2/key" ]
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip_all"]
+    volumes:
+      - mongodb2_data:/data/db
+      - ./keys:/keys
+    networks:
+      - tienda-network
+    depends_on:
+      - mongo-db
+
+  mongo-db3:
+    image: mongo:7.0
+    hostname: mongo3
+    container_name: mongo3
+    ports:
+      - 27019:27017
+    #entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip_all", "--keyFile", "keys/key3/key" ]
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip_all"]
+    volumes:
+      - mongodb3_data:/data/db
+      - ./keys:/keys
+    networks:
+      - tienda-network
+    depends_on:
+      - mongo-db
+
+  mongosetup:
+    image: mongo:7.0
+    depends_on:
+      - mongo-db
+      - mongo-db2
+      - mongo-db3
+    volumes:
+      - ./scripts:/scripts
+    restart: "no"
+    entrypoint: [ "/bin/bash", "/scripts/mongo_setup.sh"]
+    networks:
+      - tienda-network
 
   # Mongo Express - Web UI for MongoDB
   mongo-express:
@@ -30,8 +79,8 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: admin123
-      ME_CONFIG_MONGODB_URL: mongodb://admin:admin123@mongo-db:27017/
-      ME_CONFIG_MONGODB_SERVER: mongo-db
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin123@mongo1:27017,mongo2:27017,mongo3:27017/?authSource=admin&replicaSet=myReplicaSet
+      ME_CONFIG_MONGODB_SERVER: mongo1
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin123
@@ -60,7 +109,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - MONGODB_URI=mongodb://admin:admin123@mongo-db:27017/tienda?authSource=admin
+      - MONGODB_URI=mongodb://admin:admin123@mongo1:27017,mongo2:27017,mongo3:27017/tienda?authSource=admin&replicaSet=myReplicaSet&readPreference=secondaryPreferred
       - JWT_SECRET=${JWT_SECRET:-1234567890}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-427682572521-5cvcnk79ge40i8hfcfrtulv2n5ljm5qt.apps.googleusercontent.com}
     ports:
@@ -235,7 +284,7 @@ services:
     environment:
       - PROMETHEUS_URL=http://prometheus:9090
       - OUTPUT_DIR=/app/reportes
-      - MONGODB_URI=mongodb://admin:admin123@mongo-db:27017/tienda?authSource=admin
+      - MONGODB_URI=mongodb://admin:admin123@mongo1:27017,mongo2:27017,mongo3:27017/?authSource=admin&replicaSet=myReplicaSet
       - NEXTCLOUD_DATA_PATH=/var/www/html/data
     volumes:
       - ./nextcloud/reportes:/app/reportes
@@ -253,6 +302,10 @@ volumes:
   mongodb_data:
     driver: local
   mongodb_config:
+    driver: local
+  mongodb2_data:
+    driver: local
+  mongodb3_data:
     driver: local
   prometheus_data:
     driver: local
