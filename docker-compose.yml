@@ -187,6 +187,11 @@ services:
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
+    depends_on:
+      - mongodb-exporter-1
+      - mongodb-exporter-2
+      - mongodb-exporter-3
+      - cadvisor
     networks:
       - tienda-network
     healthcheck:
@@ -223,22 +228,120 @@ services:
       retries: 3
       start_period: 10s
 
-  # MongoDB Exporter para Prometheus (OPCIONAL - Comentado por defecto)
-  # Si quieres métricas detalladas de MongoDB, descomenta este servicio
-  # y actualiza prometheus.yml para incluir el target
-  # mongodb-exporter:
-  #   image: percona/mongodb_exporter:0.39
-  #   container_name: tienda-mongodb-exporter
-  #   restart: unless-stopped
-  #   command:
-  #     - '--mongodb.uri=mongodb://admin:admin123@mongo-db:27017/?authSource=admin'
-  #   ports:
-  #     - "9216:9216"
-  #   depends_on:
-  #     mongo-db:
-  #       condition: service_healthy
-  #   networks:
-  #     - tienda-network
+  # MongoDB Exporter para Prometheus - Nodo 1 (tienda-mongodb)
+  mongodb-exporter-1:
+    image: percona/mongodb_exporter:0.39
+    container_name: tienda-mongodb-exporter-1
+    restart: unless-stopped
+    command:
+      - '--mongodb.uri=mongodb://admin:admin123@mongo1:27017/?authSource=admin&replicaSet=myReplicaSet'
+    ports:
+      - "9216:9216"
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - tienda-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:9216/metrics || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MongoDB Exporter para Prometheus - Nodo 2 (mongo2)
+  mongodb-exporter-2:
+    image: percona/mongodb_exporter:0.39
+    container_name: tienda-mongodb-exporter-2
+    restart: unless-stopped
+    command:
+      - '--mongodb.uri=mongodb://admin:admin123@mongo2:27017/?authSource=admin&replicaSet=myReplicaSet'
+    ports:
+      - "9217:9216"
+    depends_on:
+      mongo-db2:
+        condition: service_started
+    networks:
+      - tienda-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:9216/metrics || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MongoDB Exporter para Prometheus - Nodo 3 (mongo3)
+  mongodb-exporter-3:
+    image: percona/mongodb_exporter:0.39
+    container_name: tienda-mongodb-exporter-3
+    restart: unless-stopped
+    command:
+      - '--mongodb.uri=mongodb://admin:admin123@mongo3:27017/?authSource=admin&replicaSet=myReplicaSet'
+    ports:
+      - "9218:9216"
+    depends_on:
+      mongo-db3:
+        condition: service_started
+    networks:
+      - tienda-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:9216/metrics || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # cAdvisor - Métricas de contenedores Docker
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: tienda-cadvisor
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "8083:8080"
+    networks:
+      - tienda-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MongoDB Backup Automático - Contenedor adicional para backups programados
+  mongodb-backup:
+    build:
+      context: .
+      dockerfile: ./database/Dockerfile.backup
+    container_name: tienda-mongodb-backup
+    restart: unless-stopped
+    environment:
+      - MONGODB_URI=mongodb://admin:admin123@mongo1:27017,mongo2:27017,mongo3:27017/?authSource=admin&replicaSet=myReplicaSet
+      - BACKUP_SCHEDULE=${BACKUP_SCHEDULE:-0 2 * * *}  # Por defecto: 2 AM diariamente (formato cron)
+      - RETENTION_DAYS=${BACKUP_RETENTION_DAYS:-7}    # Retener backups por 7 días
+      - RUN_INITIAL_BACKUP=${RUN_INITIAL_BACKUP:-false} # Ejecutar backup al iniciar (opcional)
+    volumes:
+      - mongodb_backups:/backups
+      # No montar scripts como volumen, ya están en la imagen
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+      mongo-db2:
+        condition: service_started
+      mongo-db3:
+        condition: service_started
+    networks:
+      - tienda-network
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep cron || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   # MariaDB para NextCloud
   nextcloud-db:
@@ -335,6 +438,8 @@ volumes:
   nextcloud_db_data:
     driver: local
   nextcloud_data:
+    driver: local
+  mongodb_backups:
     driver: local
 
 networks:

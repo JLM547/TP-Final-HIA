@@ -1,0 +1,24 @@
+# Dockerfile para el contenedor de backup automático de MongoDB
+FROM mongo:7.0
+
+# Instalar dependencias necesarias
+RUN apt-get update && \
+    apt-get install -y \
+    cron \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear directorio para backups y scripts
+RUN mkdir -p /backups && \
+    mkdir -p /scripts
+
+# Copiar scripts (el contexto de build es la raíz del proyecto)
+COPY scripts/mongodb-backup.sh /scripts/mongodb-backup.sh
+COPY scripts/backup-entrypoint.sh /scripts/backup-entrypoint.sh
+
+# Dar permisos de ejecución
+RUN chmod +x /scripts/mongodb-backup.sh && \
+    chmod +x /scripts/backup-entrypoint.sh
+
+# Configurar entrypoint
+ENTRYPOINT ["/scripts/backup-entrypoint.sh"]
+

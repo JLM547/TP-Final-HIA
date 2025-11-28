@@ -28,14 +28,40 @@ scrape_configs:
     metrics_path: '/api/metrics'
     scrape_interval: 15s
 
-  # MongoDB Exporter (descomentar si activas el servicio mongodb-exporter)
-  # - job_name: 'mongodb'
-  #   static_configs:
-  #     - targets: ['mongodb-exporter:9216']
-  #   scrape_interval: 15s
+  # MongoDB Exporter - Nodo 1 (tienda-mongodb)
+  - job_name: 'mongodb-node1'
+    static_configs:
+      - targets: ['mongodb-exporter-1:9216']
+        labels:
+          instance: 'mongo1'
+          node: 'primary'
+    scrape_interval: 15s
+    scrape_timeout: 10s
 
-  # Métricas de contenedores Docker (si usas cAdvisor)
-  # - job_name: 'cadvisor'
-  #   static_configs:
-  #     - targets: ['cadvisor:8080']
+  # MongoDB Exporter - Nodo 2 (mongo2)
+  - job_name: 'mongodb-node2'
+    static_configs:
+      - targets: ['mongodb-exporter-2:9216']
+        labels:
+          instance: 'mongo2'
+          node: 'secondary'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # MongoDB Exporter - Nodo 3 (mongo3)
+  - job_name: 'mongodb-node3'
+    static_configs:
+      - targets: ['mongodb-exporter-3:9216']
+        labels:
+          instance: 'mongo3'
+          node: 'secondary'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # Métricas de contenedores Docker (cAdvisor)
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 15s
+    scrape_timeout: 10s
 

@@ -18,6 +18,6 @@ export class Footer {
     'MORALES, Jeremias Leonel',
     'MORALES, Malena',
     'GUTIERREZ, Sergio Leonardo',
-    'BARBOZA, Gonzalo'
+    'VELAZQUEZ, Gonzalo Nicolas'
   ];
 }

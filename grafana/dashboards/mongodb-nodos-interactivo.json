@@ -1,0 +1,397 @@
+{
+  "dashboard": {
+    "title": "MongoDB - Nodos Interactivo",
+    "tags": ["mongodb", "replica-set", "nodos", "interactivo"],
+    "timezone": "browser",
+    "refresh": "10s",
+    "schemaVersion": 27,
+    "version": 1,
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "instance",
+          "type": "query",
+          "label": "Nodo MongoDB",
+          "datasource": "Prometheus",
+          "query": "label_values(mongodb_connections, instance)",
+          "current": {
+            "selected": true,
+            "text": "mongo1",
+            "value": "mongo1"
+          },
+          "options": [],
+          "refresh": 1,
+          "regex": "",
+          "multi": false,
+          "includeAll": false,
+          "allValue": null,
+          "sort": 1
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Estado General del Nodo: $instance",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 24, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "up{job=~\"mongodb-node.*\", instance=\"$instance\"}",
+            "legendFormat": "Estado",
+            "instant": true
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red", "text": "DOWN"},
+                {"value": 1, "color": "green", "text": "UP"}
+              ]
+            },
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "0": {"text": "DOWN"},
+                  "1": {"text": "UP"}
+                }
+              }
+            ],
+            "unit": "none"
+          }
+        },
+        "options": {
+          "graphMode": "none",
+          "colorMode": "value",
+          "orientation": "horizontal"
+        }
+      },
+      {
+        "id": 2,
+        "title": "Información General del Nodo",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 4},
+        "targets": [
+          {
+            "expr": "mongodb_replset_member_state{instance=\"$instance\"}",
+            "legendFormat": "Estado Replica Set",
+            "instant": true
+          },
+          {
+            "expr": "mongodb_replset_member_health{instance=\"$instance\"}",
+            "legendFormat": "Salud",
+            "instant": true
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 1, "color": "green"}
+              ]
+            },
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "0": {"text": "DOWN"},
+                  "1": {"text": "UP"},
+                  "1": {"text": "PRIMARY"},
+                  "2": {"text": "SECONDARY"}
+                }
+              }
+            ]
+          }
+        },
+        "options": {
+          "graphMode": "none",
+          "colorMode": "value"
+        }
+      },
+      {
+        "id": 3,
+        "title": "Conexiones",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 6, "x": 6, "y": 4},
+        "targets": [
+          {
+            "expr": "mongodb_connections{instance=\"$instance\", state=\"current\"}",
+            "legendFormat": "Conexiones Actuales",
+            "instant": true
+          },
+          {
+            "expr": "mongodb_connections{instance=\"$instance\", state=\"available\"}",
+            "legendFormat": "Conexiones Disponibles",
+            "instant": true
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Tamaño de Base de Datos",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 6, "x": 12, "y": 4},
+        "targets": [
+          {
+            "expr": "mongodb_dbstats_dataSize_bytes{instance=\"$instance\"} / 1024 / 1024",
+            "legendFormat": "Tamaño de Datos",
+            "instant": true
+          },
+          {
+            "expr": "mongodb_dbstats_storageSize_bytes{instance=\"$instance\"} / 1024 / 1024",
+            "legendFormat": "Tamaño de Almacenamiento",
+            "instant": true
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "mbytes"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Colecciones y Documentos",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 6, "x": 18, "y": 4},
+        "targets": [
+          {
+            "expr": "mongodb_dbstats_collections{instance=\"$instance\"}",
+            "legendFormat": "Colecciones",
+            "instant": true
+          },
+          {
+            "expr": "mongodb_dbstats_objects{instance=\"$instance\"}",
+            "legendFormat": "Documentos",
+            "instant": true
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Uso de CPU del Contenedor",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 10},
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{name=~\"$instance|tienda-mongodb|mongo.*\"}[5m]) * 100",
+            "legendFormat": "{{name}} - CPU %"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percent",
+            "max": 100,
+            "label": "CPU Usage (%)"
+          }
+        ],
+        "xaxis": {
+          "show": true
+        }
+      },
+      {
+        "id": 7,
+        "title": "Uso de Memoria del Contenedor",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 10},
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{name=~\"$instance|tienda-mongodb|mongo.*\"} / 1024 / 1024",
+            "legendFormat": "{{name}} - Memoria (MB)"
+          },
+          {
+            "expr": "container_memory_rss{name=~\"$instance|tienda-mongodb|mongo.*\"} / 1024 / 1024",
+            "legendFormat": "{{name}} - RSS (MB)"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "mbytes",
+            "label": "Memoria (MB)"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Operaciones por Segundo",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 18},
+        "targets": [
+          {
+            "expr": "rate(mongodb_opcounters_insert_total{instance=\"$instance\"}[5m])",
+            "legendFormat": "Inserciones/seg"
+          },
+          {
+            "expr": "rate(mongodb_opcounters_query_total{instance=\"$instance\"}[5m])",
+            "legendFormat": "Consultas/seg"
+          },
+          {
+            "expr": "rate(mongodb_opcounters_update_total{instance=\"$instance\"}[5m])",
+            "legendFormat": "Actualizaciones/seg"
+          },
+          {
+            "expr": "rate(mongodb_opcounters_delete_total{instance=\"$instance\"}[5m])",
+            "legendFormat": "Eliminaciones/seg"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ops",
+            "label": "Operaciones/segundo"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Latencia de Operaciones",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 18},
+        "targets": [
+          {
+            "expr": "mongodb_operation_latencies_latency{instance=\"$instance\", operation=\"command\"}",
+            "legendFormat": "Comandos (ms)"
+          },
+          {
+            "expr": "mongodb_operation_latencies_latency{instance=\"$instance\", operation=\"query\"}",
+            "legendFormat": "Consultas (ms)"
+          },
+          {
+            "expr": "mongodb_operation_latencies_latency{instance=\"$instance\", operation=\"insert\"}",
+            "legendFormat": "Inserciones (ms)"
+          },
+          {
+            "expr": "mongodb_operation_latencies_latency{instance=\"$instance\", operation=\"update\"}",
+            "legendFormat": "Actualizaciones (ms)"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Latencia (ms)"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Network I/O",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 26},
+        "targets": [
+          {
+            "expr": "rate(mongodb_network_bytesIn_total{instance=\"$instance\"}[5m])",
+            "legendFormat": "Bytes Entrada/seg"
+          },
+          {
+            "expr": "rate(mongodb_network_bytesOut_total{instance=\"$instance\"}[5m])",
+            "legendFormat": "Bytes Salida/seg"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "Bps",
+            "label": "Bytes/segundo"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Uso de Memoria MongoDB",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 26},
+        "targets": [
+          {
+            "expr": "mongodb_memory_resident{instance=\"$instance\"} / 1024 / 1024",
+            "legendFormat": "Memoria Resident (MB)"
+          },
+          {
+            "expr": "mongodb_memory_virtual{instance=\"$instance\"} / 1024 / 1024",
+            "legendFormat": "Memoria Virtual (MB)"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "mbytes",
+            "label": "Memoria (MB)"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Estado del Replica Set - Detalle",
+        "type": "table",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 34},
+        "targets": [
+          {
+            "expr": "mongodb_replset_member_state{instance=\"$instance\"}",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "Estado"
+          },
+          {
+            "expr": "mongodb_replset_member_health{instance=\"$instance\"}",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "Salud"
+          },
+          {
+            "expr": "mongodb_replset_optime_date{instance=\"$instance\"}",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "Optime"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true
+              },
+              "renameByName": {
+                "Value": "Valor",
+                "instance": "Nodo",
+                "state": "Estado"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+

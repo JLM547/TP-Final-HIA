@@ -301,6 +301,130 @@ tar -xzf tienda-backup.tar.gz
 docker exec -i tienda-mongodb mongorestore --uri="mongodb://admin:admin123@localhost:27017/tienda?authSource=admin" /tmp/backup/tienda
 ```
 
+### 🔄 Backups Automáticos (Punto 3 - Contenedor Adicional)
+
+El proyecto incluye un **contenedor dedicado para backups automáticos** de MongoDB que ejecuta backups programados usando cron.
+
+#### Características
+
+- ✅ **Backups automáticos programados** mediante cron
+- ✅ **Retención configurable** de backups antiguos
+- ✅ **Compresión automática** de backups (tar.gz)
+- ✅ **Logs de operaciones** para monitoreo
+- ✅ **Soporte para Replica Set** (backup desde el cluster completo)
+
+#### Configuración
+
+El contenedor `mongodb-backup` se configura mediante variables de entorno en `docker-compose.yml`:
+
+```yaml
+environment:
+  - BACKUP_SCHEDULE=0 2 * * *        # Horario en formato cron (por defecto: 2 AM diariamente)
+  - RETENTION_DAYS=7                  # Días de retención (por defecto: 7 días)
+  - RUN_INITIAL_BACKUP=false          # Ejecutar backup al iniciar (opcional)
+```
+
+#### Horarios de Backup (Formato Cron)
+
+Ejemplos de configuración de `BACKUP_SCHEDULE`:
+
+- `0 2 * * *` - Diariamente a las 2:00 AM (por defecto)
+- `0 */6 * * *` - Cada 6 horas
+- `0 0 * * 0` - Semanalmente los domingos a medianoche
+- `0 2 * * 1-5` - Lunes a Viernes a las 2:00 AM
+
+#### Acceder a los Backups
+
+Los backups se almacenan en un volumen Docker persistente:
+
+```bash
+# Listar backups disponibles
+docker volume inspect DEFINITIVOTPFinal-PYSW_mongodb_backups
+
+# Acceder al contenedor de backup
+docker exec -it tienda-mongodb-backup bash
+
+# Ver backups dentro del contenedor
+docker exec tienda-mongodb-backup ls -lh /backups
+
+# Ver logs del sistema de backup
+docker logs tienda-mongodb-backup
+
+# Ver logs en tiempo real
+docker exec tienda-mongodb-backup tail -f /var/log/backup.log
+```
+
+#### Ejecutar Backup Manual
+
+Para ejecutar un backup manualmente sin esperar al horario programado:
+
+```bash
+docker exec tienda-mongodb-backup /scripts/mongodb-backup.sh
+```
+
+#### Restaurar desde Backup
+
+Para restaurar la base de datos desde un backup automático:
+
+```bash
+# 1. Copiar el backup del volumen al sistema local
+docker run --rm -v DEFINITIVOTPFinal-PYSW_mongodb_backups:/backups -v $(pwd):/output alpine sh -c "cp /backups/tienda-backup-YYYYMMDD-HHMMSS.tar.gz /output/"
+
+# 2. Descomprimir el backup
+tar -xzf tienda-backup-YYYYMMDD-HHMMSS.tar.gz
+
+# 3. Restaurar en MongoDB
+docker exec -i tienda-mongodb mongorestore \
+  --uri="mongodb://admin:admin123@localhost:27017/tienda?authSource=admin" \
+  --drop \
+  /tmp/backup/tienda
+```
+
+#### Monitoreo
+
+- **Logs del contenedor**: `docker logs tienda-mongodb-backup`
+- **Logs de backup**: `docker exec tienda-mongodb-backup cat /var/log/backup.log`
+- **Estado del cron**: `docker exec tienda-mongodb-backup pgrep cron`
+
+## 🔧 Optimización de Base de Datos (Punto 3)
+
+El proyecto ha sido optimizado utilizando herramientas equivalentes a MySQLTuner/pgBadger para PostgreSQL/MySQL.
+
+### Optimización de Índices MongoDB
+
+Se han creado **35+ índices optimizados** en todas las colecciones de MongoDB para mejorar el rendimiento de las consultas:
+
+- **Productos**: 7 índices (nombre, categoriaId, precio, stock, popularidad, compuestos)
+- **Pedidos**: 9 índices (clienteId, estado, fechaPedido, repartidorId, compuestos)
+- **Clientes**: 2 índices (usuarioId, puntos)
+- **Usuarios**: 5 índices (username, email, rolId, estado, compuestos)
+- **Categorías**: 2 índices (nombre, estado)
+- **Combos**: 3 índices (nombre, activo, precioFinal)
+- **Ofertas**: 2 índices (activa, fechas)
+- **Calificaciones**: 5 índices (pedidoId, clienteId, fecha, compuestos)
+
+### Verificar Índices
+
+Para verificar los índices creados en MongoDB:
+
+```bash
+# Conectarse a MongoDB
+docker exec -it tienda-mongodb mongosh -u admin -p admin123 --authenticationDatabase admin
+
+# Ver índices de una colección
+use tienda
+db.productos.getIndexes()
+db.pedidos.getIndexes()
+```
+
+### Análisis de Rendimiento
+
+Los índices optimizados mejoran significativamente:
+- Consultas por categoría y disponibilidad
+- Búsquedas de pedidos por cliente y estado
+- Ordenamiento por fecha y popularidad
+- Consultas de análisis financiero
+
 ## 🗄️ MongoDB Replica Set - Cluster de Alta Disponibilidad
 
 El proyecto incluye un **cluster de MongoDB con Replica Set** configurado para alta disponibilidad y redundancia de datos.
@@ -698,20 +822,24 @@ El proyecto incluye los siguientes contenedores:
 
 4. **mongosetup**: Contenedor temporal que configura el Replica Set automáticamente
 
-5. **nextcloud-db**: Base de datos MariaDB 10.11 para NextCloud
+5. **mongodb-backup**: Contenedor adicional para backups automáticos programados de MongoDB (Punto 3)
+
+6. **nextcloud-db**: Base de datos MariaDB 10.11 para NextCloud
 
 ### Aplicaciones
 
-6. **backend**: API Node.js/Express
-7. **frontend**: Aplicación Angular servida con Nginx
-8. **mongo-express**: Interfaz web para gestionar MongoDB
-9. **nextcloud**: Servidor NextCloud para gestión documental
+7. **backend**: API Node.js/Express
+8. **frontend**: Aplicación Angular servida con Nginx
+9. **mongo-express**: Interfaz web para gestionar MongoDB
+10. **nextcloud**: Servidor NextCloud para gestión documental
 
 ### Monitoreo y Análisis
 
-10. **prometheus**: Sistema de monitoreo y alertas
-11. **grafana**: Visualización de métricas y dashboards
-12. **ia-analytics**: Módulo de IA para análisis de métricas y generación de reportes
+11. **prometheus**: Sistema de monitoreo y alertas
+12. **grafana**: Visualización de métricas y dashboards
+13. **cadvisor**: Métricas de contenedores Docker
+14. **mongodb-exporter-1/2/3**: Exporters de Prometheus para los 3 nodos MongoDB
+15. **ia-analytics**: Módulo de IA para análisis de métricas y generación de reportes
 
 ## 🚀 CI/CD - Integración y Despliegue Continuo
 

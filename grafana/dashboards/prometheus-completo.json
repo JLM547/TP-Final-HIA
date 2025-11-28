@@ -1,0 +1,401 @@
+{
+  "dashboard": {
+    "title": "Prometheus - Dashboard Completo",
+    "tags": ["prometheus", "monitoring", "completo", "all-metrics"],
+    "timezone": "browser",
+    "refresh": "10s",
+    "schemaVersion": 27,
+    "version": 1,
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Estado de Todos los Targets de Prometheus",
+        "type": "table",
+        "gridPos": {"h": 10, "w": 24, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "up",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{job}} - {{instance}}"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true
+              },
+              "indexByName": {
+                "Time": 0,
+                "Value": 1,
+                "job": 2,
+                "instance": 3
+              },
+              "renameByName": {
+                "Value": "Estado",
+                "job": "Job",
+                "instance": "Instancia"
+              }
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red", "text": "DOWN"},
+                {"value": 1, "color": "green", "text": "UP"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Métricas de Prometheus",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 10},
+        "targets": [
+          {
+            "expr": "prometheus_tsdb_head_samples",
+            "legendFormat": "Muestras en Head"
+          },
+          {
+            "expr": "prometheus_tsdb_head_series",
+            "legendFormat": "Series en Head"
+          },
+          {
+            "expr": "rate(prometheus_tsdb_head_samples_appended_total[5m])",
+            "legendFormat": "Muestras Agregadas/seg"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Uso de Memoria de Prometheus",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 10},
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes{job=\"prometheus\"} / 1024 / 1024",
+            "legendFormat": "Memoria Resident (MB)"
+          },
+          {
+            "expr": "process_virtual_memory_bytes{job=\"prometheus\"} / 1024 / 1024",
+            "legendFormat": "Memoria Virtual (MB)"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "mbytes"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Métricas del Backend (Node.js)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 18},
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"backend\"}[5m])",
+            "legendFormat": "{{method}} {{route}}"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Errores del Backend",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 18},
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"backend\",status=~\"5..\"}[5m])",
+            "legendFormat": "Errores 5xx"
+          },
+          {
+            "expr": "rate(http_requests_total{job=\"backend\",status=~\"4..\"}[5m])",
+            "legendFormat": "Errores 4xx"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "MongoDB - Estado de Salud de los 3 Nodos",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 24, "x": 0, "y": 26},
+        "targets": [
+          {
+            "expr": "up{job=~\"mongodb-node.*\"}",
+            "legendFormat": "{{instance}} - {{job}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 1, "color": "green"}
+              ]
+            },
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "0": {"text": "DOWN"},
+                  "1": {"text": "UP"}
+                }
+              }
+            ]
+          }
+        },
+        "options": {
+          "graphMode": "none",
+          "colorMode": "value",
+          "orientation": "horizontal"
+        }
+      },
+      {
+        "id": 7,
+        "title": "MongoDB - Operaciones por Nodo",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32},
+        "targets": [
+          {
+            "expr": "rate(mongodb_opcounters_insert_total[5m])",
+            "legendFormat": "{{instance}} - Inserciones"
+          },
+          {
+            "expr": "rate(mongodb_opcounters_query_total[5m])",
+            "legendFormat": "{{instance}} - Consultas"
+          },
+          {
+            "expr": "rate(mongodb_opcounters_update_total[5m])",
+            "legendFormat": "{{instance}} - Actualizaciones"
+          },
+          {
+            "expr": "rate(mongodb_opcounters_delete_total[5m])",
+            "legendFormat": "{{instance}} - Eliminaciones"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "MongoDB - Conexiones por Nodo",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32},
+        "targets": [
+          {
+            "expr": "mongodb_connections{state=\"current\"}",
+            "legendFormat": "{{instance}} - Conexiones Actuales"
+          },
+          {
+            "expr": "mongodb_connections{state=\"available\"}",
+            "legendFormat": "{{instance}} - Conexiones Disponibles"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "MongoDB - Estado del Replica Set",
+        "type": "table",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 40},
+        "targets": [
+          {
+            "expr": "mongodb_replset_member_state",
+            "format": "table",
+            "legendFormat": "Estado"
+          },
+          {
+            "expr": "mongodb_replset_member_health",
+            "format": "table",
+            "legendFormat": "Salud"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true
+              },
+              "renameByName": {
+                "Value": "Valor",
+                "instance": "Nodo",
+                "state": "Estado"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "MongoDB - Tamaño de Base de Datos por Nodo",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 40},
+        "targets": [
+          {
+            "expr": "mongodb_dbstats_dataSize_bytes / 1024 / 1024",
+            "legendFormat": "{{instance}} - Tamaño de Datos (MB)"
+          },
+          {
+            "expr": "mongodb_dbstats_storageSize_bytes / 1024 / 1024",
+            "legendFormat": "{{instance}} - Tamaño de Almacenamiento (MB)"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "mbytes"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "cAdvisor - CPU por Contenedor",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 48},
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{name=~\"tienda-.*|mongo.*\"}[5m]) * 100",
+            "legendFormat": "{{name}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percent",
+            "max": 100
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "cAdvisor - Memoria por Contenedor",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 48},
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{name=~\"tienda-.*|mongo.*\"} / 1024 / 1024",
+            "legendFormat": "{{name}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "mbytes"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "cAdvisor - Network I/O por Contenedor",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 56},
+        "targets": [
+          {
+            "expr": "rate(container_network_receive_bytes_total{name=~\"tienda-.*|mongo.*\"}[5m])",
+            "legendFormat": "{{name}} - RX"
+          },
+          {
+            "expr": "rate(container_network_transmit_bytes_total{name=~\"tienda-.*|mongo.*\"}[5m])",
+            "legendFormat": "{{name}} - TX"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "Bps"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "title": "cAdvisor - I/O de Disco por Contenedor",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 56},
+        "targets": [
+          {
+            "expr": "rate(container_fs_reads_bytes_total{name=~\"tienda-.*|mongo.*\"}[5m])",
+            "legendFormat": "{{name}} - Lectura"
+          },
+          {
+            "expr": "rate(container_fs_writes_bytes_total{name=~\"tienda-.*|mongo.*\"}[5m])",
+            "legendFormat": "{{name}} - Escritura"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "Bps"
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "title": "Todas las Métricas Disponibles (Explorador)",
+        "type": "table",
+        "gridPos": {"h": 10, "w": 24, "x": 0, "y": 64},
+        "targets": [
+          {
+            "expr": "{__name__=~\".+\"}",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{__name__}}"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true
+              }
+            }
+          },
+          {
+            "id": "limit",
+            "options": {
+              "limit": 100
+            }
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "title": "Resumen de Métricas por Job",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 24, "x": 0, "y": 74},
+        "targets": [
+          {
+            "expr": "count by (job) (up == 1)",
+            "legendFormat": "{{job}} - Targets Activos"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "orientation": "horizontal"
+        }
+      }
+    ]
+  }
+}
+
