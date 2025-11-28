@@ -118,3 +118,9 @@ coverage/
 .storybook-out/
 jspm_packages/
 
+# ============================================
+# keys
+# ============================================
+.keys/key1/key
+.keys/key2/key
+.keys/key3/key

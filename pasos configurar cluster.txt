@@ -1,0 +1,22 @@
+1. correr docker compose up -d
+2. entrar a la bash  del nodo primario con docker exec -it tienda-mongodb bash
+3. correr el script /scripts/create-admin.sh
+4. salir de la bash y hacer docker compose down
+5. Alternar los comentarios entrypoints del nodo2 y nodo 3 en docker compose de esta forma:
+
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip_all", "--keyFile", "keys/key2/key" ]
+    #entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip_all"]
+
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip_all", "--keyFile", "keys/key3/key" ]
+    #entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip_all"]
+
+
+6. Alternar los comentarios de la ultima 2 lineas del script scripts/init-entrypoint.sh #exec mongod --replSet myReplicaSet --bind_ip_all --keyFile /keys/key1/key de esta manera:
+
+exec mongod --replSet myReplicaSet --bind_ip_all --keyFile /keys/key1/key
+#exec mongod --replSet myReplicaSet --bind_ip_all
+
+ 
+7. correr docker compose up -d
+
+8. a partir de aqui ingresar a las mogobash con mongosh -u admin -p admin123
